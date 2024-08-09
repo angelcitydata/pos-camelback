@@ -29,13 +29,13 @@ const ProductGrid = ({ products, addToCart }) => {
         <div
           key={product.id}
           onClick={() => addToCart(product)}
-          className={`flex-row align-middle items-center hover:bg-blue-300 active:bg-blue-200 active:shadow-inner  cursor-pointer h-32  bg-white p-4 rounded-lg shadow-sm text-center ${
+          className={`justify-center hover:bg-blue-300 active:bg-blue-200 active:shadow-inner  cursor-pointer h-32  bg-white p-4  pt-8 rounded-lg shadow-sm text-center ${
             product.animate ? "fade-in" : ""
           } hover:bg-gray-100 transition`}
         >
           {/* <img src={product.image} alt={product.name} className="object-cover w-full h-32 mb-4 rounded-lg" /> */}
           <h2 className="text-lg font-semibold">{product.name}</h2>
-          <p className="text-gray-600">${product.price}</p>
+          <p className="pt-4 text-blue-600">${product.price}</p>
         </div>
       ))}
     </div>

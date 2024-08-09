@@ -16,7 +16,7 @@ const Cart = ({ cart, total, removeFromCart, saveCart }) => {
             </span>
             <button
               onClick={() => removeFromCart(index)}
-              className="text-gray-500 hover:text-red-500"
+              className="text-gray-500 hover:text-blue-500"
             >
               <TrashIcon className="w-5 h-5" />
             </button>

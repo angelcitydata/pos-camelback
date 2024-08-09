@@ -78,7 +78,7 @@ function App({ products }) {
             />
           </div>
 
-          <div className="w-9/12 p-2 overflow-y-auto bg-gray-100 ">
+          <div className="w-9/12 p-5 overflow-y-auto bg-gray-100 ">
             {" "}
             <ProductGrid products={filteredProducts} addToCart={addToCart} />
           </div>
