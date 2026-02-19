@@ -31,6 +31,7 @@ function App({ products }) {
 
   const saveCart = () => {
     FileMaker.PerformScript("Save Cart", JSON.stringify(cart));
+    setCart([]);
   };
   const addToCart = (product) => {
     setCart((prevCart) => {
