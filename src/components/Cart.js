@@ -3,32 +3,34 @@ import { TrashIcon } from "@heroicons/react/20/solid";
 
 const Cart = ({ cart, total, removeFromCart, saveCart }) => {
   return (
-    <div className="flex flex-col h-full gap-4 p-4 pb-4 rounded-l-lg bg-gray-50 ">
-      <h2 className="mb-4 text-xl font-bold">Cart</h2>
-      <ul className="max-h-screen overflow-y-auto">
+    <div className="flex flex-col h-full p-2 border border-gray-300 bg-gray-50">
+      <h2 className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-gray-600">
+        Cart
+      </h2>
+      <ul className="flex-1 min-h-0 overflow-y-auto border-t border-gray-300">
         {cart.map((item, index) => (
           <li
             key={index}
-            className="flex items-center justify-between py-2 border-b"
+            className="flex items-center justify-between gap-1.5 py-3 text-[14px] border-b border-gray-300"
           >
-            <span>
+            <span className="leading-4 text-gray-700 ">
               {item.name} (x{item.quantity}) - ${item.price.toFixed(2)} each
             </span>
             <button
               onClick={() => removeFromCart(index)}
-              className="text-gray-500 hover:text-blue-500"
+              className="p-0.5 text-gray-500 transition hover:text-gray-700"
             >
               <TrashIcon className="w-5 h-5" />
             </button>
           </li>
         ))}
       </ul>
-      <div className="flex-row mt-auto border-t-2">
-        <div className="mt-4 text-lg font-bold text-right">
+      <div className="pt-2 mt-2 border-t border-gray-300">
+        <div className="text-xs font-semibold text-right text-gray-700">
           Total: ${total.toFixed(2)}
         </div>
         <button
-          className="w-full p-2 mt-6 text-white bg-blue-500 rounded-md"
+          className="w-full h-8 mt-2 text-[16px] font-medium tracking-wide text-white uppercase transition bg-blue-500 border border-blue-500 hover:bg-blue-600"
           onClick={saveCart}
         >
           Save Cart

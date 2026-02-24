@@ -5,29 +5,77 @@ import Filter from "./components/Filter";
 
 function App({ products }) {
   const updatedProducts = products.map((product) => {
-    const p = product.fieldData;
+    const fieldData = product.fieldData || {};
+    const variants = (product.portalData?.prod_VARIANT || []).map(
+      (variant) => ({
+        id: Number(variant.recordId) || variant.recordId,
+        name: variant["prod_VARIANT::Description__c"] || "Variant",
+        price: Number(variant["prod_VARIANT::Price"]) || 0,
+        sortOrder: Number(variant["prod_VARIANT::SortOrder"]) || 0,
+      })
+    );
+
+    const collectionPortalData =
+      product.portalData?.prod_colljoin_COLL ||
+      product.portalData?.prod_COLLECTION__vl ||
+      [];
+
+    const collections = collectionPortalData
+      .map(
+        (collection) =>
+          collection["prod_colljoin_COLL::Collection"] ||
+          collection["prod_COLLECTION__vl::Collection"]
+      )
+      .filter(Boolean);
+
     return {
-      id: p.PrimaryKey,
-      name: p["Items Name"],
-      price: p["Unit Price"],
-      type: p.Item_Group,
+      id: Number(fieldData.__kp_Product_ID) || product.recordId,
+      name: fieldData.ProductName || "Unnamed Product",
+      variants,
+      collections,
+      isTopTen: Boolean(fieldData.flag_topTen),
+      type: fieldData.ProductType__c || "General",
     };
   });
-  const menuItems = [
-    ...new Set(updatedProducts.map((product) => product.type)),
+
+  const collectionFilters = [
+    ...new Set(
+      updatedProducts.flatMap((product) => product.collections).filter(Boolean)
+    ),
+  ];
+  const productTypeFilters = [
+    ...new Set(updatedProducts.map((product) => product.type).filter(Boolean)),
   ];
 
-  console.log(updatedProducts);
   const [cart, setCart] = useState([]);
-  const [filter, setFilter] = useState("All");
+  const [filterMode, setFilterMode] = useState("Collections");
+  const [filter, setFilter] = useState("Top Ten");
   const [filteredProducts, setFilteredProducts] = useState(updatedProducts);
-  console.log("FP", filteredProducts);
+
+  const menuItems =
+    filterMode === "Collections"
+      ? ["Top Ten", ...collectionFilters]
+      : ["Top Ten", ...productTypeFilters];
+
   useEffect(() => {
-    const filtered = updatedProducts.filter(
-      (product) => filter === "All" || product.type === filter
-    );
+    setFilter("Top Ten");
+  }, [filterMode]);
+
+  useEffect(() => {
+    const filtered = updatedProducts.filter((product) => {
+      if (filter === "Top Ten") {
+        return product.isTopTen;
+      }
+
+      if (filterMode === "Collections") {
+        return product.collections.includes(filter);
+      }
+
+      return product.type === filter;
+    });
+
     setFilteredProducts(filtered);
-  }, [filter]);
+  }, [filter, filterMode, products]);
 
   const saveCart = () => {
     FileMaker.PerformScript("Save Cart", JSON.stringify(cart));
@@ -66,28 +114,28 @@ function App({ products }) {
   );
 
   return (
-    <div className="flex flex-col min-h-screen pb-16 mb-10 bg-gray-200">
+    <div className="min-h-screen text-gray-700 bg-gray-200">
       {/* Main Content */}
-      <div className="flex flex-1 p-6 space-x-6">
-        <div className="flex flex-row flex-1 h-screen p-4 mb-4 overflow-y-auto bg-white rounded-lg shadow-lg">
-          <div className="w-full h-full md:w-1/3 md:h-auto">
+      <div className="p-3 md:p-4">
+        <div className="grid h-[calc(100vh-2rem)] grid-cols-12 gap-2 border border-gray-300 bg-gray-100 p-2">
+          <div className="col-span-12 md:col-span-2 lg:col-span-2 min-h-0 bg-gray-200 border border-gray-300 p-1.5">
+            <Filter
+              setFilter={setFilter}
+              selectedFilter={filter}
+              filters={menuItems}
+              filterMode={filterMode}
+              setFilterMode={setFilterMode}
+            />
+          </div>
+          <div className="min-h-0 col-span-12 md:col-span-6 lg:col-span-7">
+            <ProductGrid products={filteredProducts} addToCart={addToCart} />
+          </div>
+          <div className="min-h-0 col-span-12 md:col-span-4 lg:col-span-3">
             <Cart
               cart={cart}
               total={total}
               removeFromCart={removeFromCart}
               saveCart={saveCart}
-            />
-          </div>
-
-          <div className="w-9/12 p-5 overflow-y-auto bg-gray-100 ">
-            {" "}
-            <ProductGrid products={filteredProducts} addToCart={addToCart} />
-          </div>
-          <div className="w-3/12 pt-2 pb-8 pr-3 rounded-r-lg bg-blue-950">
-            <Filter
-              setFilter={setFilter}
-              selectedFilter={filter}
-              filters={menuItems}
             />
           </div>
         </div>

@@ -15,7 +15,7 @@ It's a template file, so you can use to start other projects.
 - Scripts to build and upload the inlined code to FileMaker
 ## TO GET STARTED Using this file
 1. `npm install`
-2. `npm start`
+2. `npm run dev`
 3. Open the jsDev.fmp12 file.
 4. Allow it to work in Dev mode.
 
