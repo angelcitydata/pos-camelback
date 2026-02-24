@@ -87,4 +87,13 @@ code {
   .filter-scrollbar::-webkit-scrollbar-thumb:hover {
     @apply bg-gray-400;
   }
+
+  .scrollbar-hide {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }

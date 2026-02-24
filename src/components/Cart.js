@@ -3,11 +3,11 @@ import { TrashIcon } from "@heroicons/react/20/solid";
 
 const Cart = ({ cart, total, removeFromCart, saveCart }) => {
   return (
-    <div className="flex flex-col h-full p-2 border border-gray-300 bg-gray-50">
-      <h2 className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-gray-600">
+    <div className="flex flex-col h-full p-4 bg-white rounded-2xl">
+      <h2 className="px-1 pb-1.5 text-base font-semibold tracking-wide text-slate-900 uppercase">
         Cart
       </h2>
-      <ul className="flex-1 min-h-0 overflow-y-auto border-t border-gray-300">
+      <ul className="flex-1 min-h-0 overflow-y-auto">
         {cart.map((item, index) => (
           <li
             key={index}

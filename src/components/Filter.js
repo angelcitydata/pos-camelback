@@ -1,5 +1,8 @@
 import React from "react";
 
+import FilterCard from "./FilterCard";
+import { getFilterIcon } from "../filterIcons";
+
 const Filter = ({
   setFilter,
   selectedFilter,
@@ -9,44 +12,40 @@ const Filter = ({
 }) => {
   return (
     <div className="flex flex-col h-full min-h-0">
-      <h2 className="px-1.5 pb-1.5 text-[11px] font-semibold tracking-wide text-gray-600 uppercase border-b border-gray-300">
+      <h2 className="px-1 pb-1.5 text-base font-semibold tracking-wide text-slate-900 uppercase">
         Filters
       </h2>
-      <div className="grid grid-cols-2 gap-1 pt-1.5">
+      <div className="grid grid-cols-2 my-1.5 rounded-full overflow-hidden bg-slate-200">
         <button
           onClick={() => setFilterMode("Collections")}
-          className={`h-10 px-2 text-[11px] font-semibold uppercase border transition ${
+          className={`h-10 px-2 text-[11px] font-semibold rounded-full uppercase transition ${
             filterMode === "Collections"
-              ? "bg-gray-300 border-gray-400 text-gray-800"
-              : "bg-white border-gray-300 text-gray-600 hover:bg-gray-100"
+              ? "bg-green-500 text-white"
+              : "text-slate-600 hover:cursor-pointer"
           }`}
         >
           Collections
         </button>
         <button
           onClick={() => setFilterMode("Product Type")}
-          className={`h-10 px-2 text-[11px] font-semibold uppercase border transition ${
+          className={`h-10 px-2 text-[11px] font-semibold rounded-full uppercase transition ${
             filterMode === "Product Type"
-              ? "bg-gray-300 border-gray-400 text-gray-800"
-              : "bg-white border-gray-300 text-gray-600 hover:bg-gray-100"
+              ? "bg-green-500 text-white"
+              : "text-slate-600 hover:cursor-pointer"
           }`}
         >
           Product Type
         </button>
       </div>
-      <div className="filter-scrollbar min-h-0 flex-1 space-y-1 overflow-y-auto pt-1.5">
+      <div className="scrollbar-hide flex flex-col min-h-0 flex-1 space-y-1 overflow-y-auto mt-2 gap-2">
         {filters.map((filter) => (
-          <button
+          <FilterCard
             key={filter}
+            filter={filter}
+            icon={getFilterIcon(filter, filterMode)}
+            selected={selectedFilter === filter}
             onClick={() => setFilter(filter)}
-            className={`w-full h-12.5 px-1.5 text-left text-[16px] uppercase border transition ${
-              selectedFilter === filter
-                ? "bg-gray-300 border-gray-400 text-gray-800"
-                : "bg-white border-gray-300 text-gray-600 hover:bg-gray-100"
-            }`}
-          >
-            {filter}
-          </button>
+          />
         ))}
       </div>
     </div>

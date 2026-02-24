@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 
+import ProductCard from "./ProductCard";
+import VariantCard from "./VariantCard";
+
 const ProductGrid = ({ products, addToCart }) => {
   const [animatedProducts, setAnimatedProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const tileButtonClass =
-    "h-full w-full border border-gray-300 bg-white p-1.5 text-left transition hover:bg-gray-100 active:bg-gray-200";
 
   useEffect(() => {
     setAnimatedProducts(
@@ -31,17 +32,13 @@ const ProductGrid = ({ products, addToCart }) => {
   }, [products]);
 
   const renderProducts = () => (
-    <div className="grid flex-1 min-h-0 grid-cols-2 auto-rows-[8.5rem] gap-1.5 pt-1.5 overflow-y-auto md:grid-cols-3">
+    <div className="scrollbar-hide grid flex-1 min-h-0 grid-cols-2 auto-rows-[8.5rem] gap-4 pt-1.5 overflow-y-auto md:grid-cols-3 xl:grid-cols-4">
       {animatedProducts.map((product) => (
-        <button
+        <ProductCard
           key={product.id}
+          product={product}
           onClick={() => setSelectedProduct(product)}
-          className={`${tileButtonClass} ${product.animate ? "fade-in" : ""}`}
-        >
-          <p className="text-[16px] font-medium leading-4 text-gray-700 line-clamp-2">
-            {product.name}
-          </p>
-        </button>
+        />
       ))}
     </div>
   );
@@ -53,10 +50,12 @@ const ProductGrid = ({ products, addToCart }) => {
 
     return (
       <div className="flex flex-1 min-h-0 flex-col pt-1.5">
-        <div className="grid flex-1 min-h-0 grid-cols-2 auto-rows-[8.5rem] gap-1.5 overflow-y-auto md:grid-cols-3">
+        <div className="scrollbar-hide grid flex-1 min-h-0 grid-cols-2 auto-rows-[8.5rem] gap-4 overflow-y-auto md:grid-cols-3 xl:grid-cols-4">
           {sortedVariants.map((variant) => (
-            <button
+            <VariantCard
               key={variant.id}
+              variant={variant}
+              productName={selectedProduct.name}
               onClick={() =>
                 addToCart({
                   id: `${selectedProduct.id}-${variant.id}`,
@@ -67,20 +66,12 @@ const ProductGrid = ({ products, addToCart }) => {
                   price: variant.price,
                 })
               }
-              className={`${tileButtonClass} fade-in`}
-            >
-              <p className="text-[16px] font-medium leading-4 text-gray-700 line-clamp-2">
-                {variant.name}
-              </p>
-              <p className="mt-1 text-xs font-semibold text-gray-800">
-                ${variant.price}
-              </p>
-            </button>
+            />
           ))}
         </div>
         <button
           onClick={() => setSelectedProduct(null)}
-          className="mt-1.5 h-12 w-full border border-gray-300 bg-white px-3 text-[14px] font-semibold uppercase tracking-wide text-gray-700 transition hover:bg-gray-100"
+          className="mt-1.5 h-12 w-full border border-slate-300 bg-white px-3 text-[14px] font-semibold uppercase tracking-wide text-slate-700 transition hover:bg-slate-100"
         >
           Back
         </button>
@@ -89,8 +80,8 @@ const ProductGrid = ({ products, addToCart }) => {
   };
 
   return (
-    <div className="flex flex-col h-full border border-gray-300 bg-gray-50 p-1.5">
-      <h2 className="px-1 pb-1.5 text-[11px] font-semibold tracking-wide text-gray-600 uppercase border-b border-gray-300">
+    <div className="flex flex-col h-full bg-white p-4 rounded-2xl">
+      <h2 className="px-1 pb-1.5 text-base font-semibold tracking-wide text-slate-900 uppercase">
         {selectedProduct ? selectedProduct.name : "Products"}
       </h2>
       {selectedProduct ? renderVariants() : renderProducts()}

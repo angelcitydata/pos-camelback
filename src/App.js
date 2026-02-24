@@ -114,11 +114,11 @@ function App({ products }) {
   );
 
   return (
-    <div className="min-h-screen text-gray-700 bg-gray-200">
+    <div className="min-h-screen text-gray-700 bg-slate-100">
       {/* Main Content */}
       <div className="p-3 md:p-4">
-        <div className="grid h-[calc(100vh-2rem)] grid-cols-12 gap-2 border border-gray-300 bg-gray-100 p-2">
-          <div className="col-span-12 md:col-span-2 lg:col-span-2 min-h-0 bg-gray-200 border border-gray-300 p-1.5">
+        <div className="grid h-[calc(100vh-2rem)] grid-cols-12 gap-4 p-2">
+          <div className="col-span-12 md:col-span-2 min-h-0 p-4">
             <Filter
               setFilter={setFilter}
               selectedFilter={filter}
