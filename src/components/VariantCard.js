@@ -1,7 +1,7 @@
 import React from "react";
 
 const tileButtonClass =
-  "flex flex-col gap-1 justify-center bg-slate-50/75 p-4 rounded-xl text-left transition hover:bg-green-100 active:bg-green-200 hover:cursor-pointer";
+  "flex flex-col gap-1 justify-center bg-slate-50/75 p-4 rounded-xl text-left transition hover:bg-green-100 active:bg-green-200 hover:cursor-pointer hover:shadow-lg hover:shadow-slate-200/50";
 
 export default function VariantCard({ variant, productName, onClick }) {
   const displayName =

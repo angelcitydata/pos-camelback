@@ -69,21 +69,36 @@ const ProductGrid = ({ products, addToCart }) => {
             />
           ))}
         </div>
-        <button
-          onClick={() => setSelectedProduct(null)}
-          className="mt-1.5 h-12 w-full border border-slate-300 bg-white px-3 text-[14px] font-semibold uppercase tracking-wide text-slate-700 transition hover:bg-slate-100"
-        >
-          Back
-        </button>
       </div>
     );
   };
 
   return (
     <div className="flex flex-col h-full bg-white p-4 rounded-2xl">
-      <h2 className="px-1 pb-1.5 text-base font-semibold tracking-wide text-slate-900 uppercase">
-        {selectedProduct ? selectedProduct.name : "Products"}
-      </h2>
+      <div className="flex items-center gap-2 px-1 pb-1.5">
+        {selectedProduct ? (
+          <>
+            <button
+              type="button"
+              onClick={() => setSelectedProduct(null)}
+              className="flex items-center justify-center w-8 h-8 rounded-lg text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
+              aria-label="Back to products"
+            >
+              <i
+                className="fa-solid fa-arrow-left text-lg hover:cursor-pointer"
+                aria-hidden
+              />
+            </button>
+            <h2 className="text-base font-semibold tracking-wide text-slate-900 uppercase">
+              {selectedProduct.name}
+            </h2>
+          </>
+        ) : (
+          <h2 className="text-base font-semibold tracking-wide text-slate-900 uppercase">
+            Products
+          </h2>
+        )}
+      </div>
       {selectedProduct ? renderVariants() : renderProducts()}
     </div>
   );

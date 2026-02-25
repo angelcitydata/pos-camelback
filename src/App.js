@@ -108,6 +108,19 @@ function App({ products }) {
     });
   };
 
+  const updateQuantity = (index, delta) => {
+    setCart((prevCart) => {
+      const updatedCart = [...prevCart];
+      const newQty = updatedCart[index].quantity + delta;
+      if (newQty < 1) {
+        updatedCart.splice(index, 1);
+      } else {
+        updatedCart[index] = { ...updatedCart[index], quantity: newQty };
+      }
+      return updatedCart;
+    });
+  };
+
   const total = cart.reduce(
     (sum, product) => sum + product.price * product.quantity,
     0
@@ -135,6 +148,7 @@ function App({ products }) {
               cart={cart}
               total={total}
               removeFromCart={removeFromCart}
+              updateQuantity={updateQuantity}
               saveCart={saveCart}
             />
           </div>

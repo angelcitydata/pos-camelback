@@ -3,7 +3,7 @@ import React from "react";
 import ProductTag from "./ProductTag";
 
 const tileButtonClass =
-  "flex flex-col gap-1 justify-start h-full w-full rounded-xl overflow-hidden bg-slate-50/75 p-4 rounded-xl text-left transition hover:bg-green-100 active:bg-green-200 hover:cursor-pointer";
+  "flex flex-col gap-1 justify-start h-full w-full rounded-xl overflow-hidden bg-slate-50/75 p-4 rounded-xl text-left transition hover:bg-green-100 active:bg-green-200 hover:cursor-pointer hover:shadow-lg hover:shadow-slate-200/50";
 
 export default function ProductCard({ product, onClick }) {
   const collections = product.collections || [];
