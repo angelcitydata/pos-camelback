@@ -4,8 +4,18 @@ import { BLOB_PATHS } from "../blobPaths";
 const DEFAULT_VIEWBOX = "0 0 200 200";
 const DEFAULT_COLOR = "#b9f8cf";
 
+/** Default blob index when a specific blob is requested (e.g. for empty states). */
+export const DEFAULT_BLOB_INDEX = 7;
+
 function getRandomPath() {
   return BLOB_PATHS[Math.floor(Math.random() * BLOB_PATHS.length)];
+}
+
+function getPathAtIndex(index) {
+  const i =
+    ((Math.floor(index) % BLOB_PATHS.length) + BLOB_PATHS.length) %
+    BLOB_PATHS.length;
+  return BLOB_PATHS[i];
 }
 
 function getTranslate(viewBox) {
@@ -22,11 +32,16 @@ function getTranslate(viewBox) {
 export default function Blob({
   color = DEFAULT_COLOR,
   viewBox = DEFAULT_VIEWBOX,
+  index,
   className,
   style,
   ...rest
 }) {
-  const [pathD] = useState(() => getRandomPath());
+  const [pathD] = useState(() =>
+    index !== undefined && index !== null
+      ? getPathAtIndex(index)
+      : getRandomPath()
+  );
   const transform = getTranslate(viewBox);
 
   return (
