@@ -11,8 +11,17 @@ export default function ProductCard({ product, onClick }) {
 
   return (
     <button type="button" className={tileButtonClass} onClick={onClick}>
-      <div className="w-full flex justify-center mb-2">
-        <Blob className="w-28 h-28 flex-shrink-0" />
+      <div className="relative w-full flex justify-center mb-2">
+        <div className="relative w-28 h-28 flex-shrink-0 bg-white rounded-2xl overflow-hidden">
+          <Blob className="absolute inset-0 w-full h-full" />
+          {product.image && (
+            <img
+              src={product.image}
+              alt=""
+              className="absolute inset-0 w-full h-full object-contain p-1.5 pointer-events-none"
+            />
+          )}
+        </div>
       </div>
       <p className="min-h-[2rem] text-[16px] font-medium leading-4 text-slate-900 line-clamp-2 transition group-hover:text-white">
         {product.name}

@@ -28,6 +28,11 @@ function App({ products }) {
       )
       .filter(Boolean);
 
+    const thumbBase64 = fieldData.ThumbBase64;
+    const image = thumbBase64
+      ? `data:image/png;base64,${thumbBase64}`
+      : null;
+
     return {
       id: Number(fieldData.__kp_Product_ID) || product.recordId,
       name: fieldData.ProductName || "Unnamed Product",
@@ -35,6 +40,7 @@ function App({ products }) {
       collections,
       isTopTen: Boolean(fieldData.flag_topTen),
       type: fieldData.ProductType__c || "General",
+      image,
     };
   });
 
