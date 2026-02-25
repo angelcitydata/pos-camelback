@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import ProductCard from "./ProductCard";
 import VariantCard from "./VariantCard";
 
-const ProductGrid = ({ products, addToCart }) => {
+const ProductGrid = ({ products, cart, addToCart }) => {
   const [animatedProducts, setAnimatedProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
@@ -32,7 +32,7 @@ const ProductGrid = ({ products, addToCart }) => {
   }, [products]);
 
   const renderProducts = () => (
-    <div className="scrollbar-hide grid flex-1 min-h-0 grid-cols-2 auto-rows-[8.5rem] gap-4 pt-1.5 overflow-y-auto md:grid-cols-3 xl:grid-cols-4">
+    <div className="scrollbar-hide grid flex-1 min-h-0 grid-cols-2 auto-rows-[17rem] gap-4 pt-1.5 overflow-y-auto md:grid-cols-3 xl:grid-cols-4">
       {animatedProducts.map((product) => (
         <ProductCard
           key={product.id}
@@ -50,24 +50,31 @@ const ProductGrid = ({ products, addToCart }) => {
 
     return (
       <div className="flex flex-1 min-h-0 flex-col pt-1.5">
-        <div className="scrollbar-hide grid flex-1 min-h-0 grid-cols-2 auto-rows-[8.5rem] gap-4 overflow-y-auto md:grid-cols-3 xl:grid-cols-4">
-          {sortedVariants.map((variant) => (
-            <VariantCard
-              key={variant.id}
-              variant={variant}
-              productName={selectedProduct.name}
-              onClick={() =>
-                addToCart({
-                  id: `${selectedProduct.id}-${variant.id}`,
-                  name:
-                    variant.name === "Default Title"
-                      ? selectedProduct.name
-                      : `${selectedProduct.name} - ${variant.name}`,
-                  price: variant.price,
-                })
-              }
-            />
-          ))}
+        <div className="scrollbar-hide grid flex-1 min-h-0 grid-cols-2 auto-rows-[17rem] gap-4 overflow-y-auto md:grid-cols-3 xl:grid-cols-4">
+          {sortedVariants.map((variant) => {
+            const cartId = `${selectedProduct.id}-${variant.id}`;
+            const quantityInCart =
+              cart.find((item) => item.id === cartId)?.quantity ?? 0;
+
+            return (
+              <VariantCard
+                key={variant.id}
+                variant={variant}
+                productName={selectedProduct.name}
+                quantityInCart={quantityInCart}
+                onClick={() =>
+                  addToCart({
+                    id: cartId,
+                    name:
+                      variant.name === "Default Title"
+                        ? selectedProduct.name
+                        : `${selectedProduct.name} - ${variant.name}`,
+                    price: variant.price,
+                  })
+                }
+              />
+            );
+          })}
         </div>
       </div>
     );

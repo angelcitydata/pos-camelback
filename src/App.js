@@ -141,7 +141,11 @@ function App({ products }) {
             />
           </div>
           <div className="min-h-0 col-span-12 md:col-span-6 lg:col-span-7">
-            <ProductGrid products={filteredProducts} addToCart={addToCart} />
+            <ProductGrid
+              products={filteredProducts}
+              cart={cart}
+              addToCart={addToCart}
+            />
           </div>
           <div className="min-h-0 col-span-12 md:col-span-4 lg:col-span-3">
             <Cart

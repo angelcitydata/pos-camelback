@@ -12,7 +12,7 @@ const Cart = ({ cart, total, removeFromCart, updateQuantity, saveCart }) => {
           return (
             <li
               key={index}
-              className="flex items-center justify-between gap-3 py-4 text-[14px] border-b border-slate-200"
+              className="group flex items-start justify-between gap-3 py-4 text-[14px] border-b border-slate-200 last:border-b-0"
             >
               <div className="flex flex-col gap-1.5 min-w-0 flex-1">
                 <span className="font-medium text-slate-900 leading-tight">
@@ -21,7 +21,7 @@ const Cart = ({ cart, total, removeFromCart, updateQuantity, saveCart }) => {
                 <span className="text-slate-500 text-[13px]">
                   ${item.price.toFixed(2)} x {item.quantity}
                 </span>
-                <div className="flex items-center gap-1 mt-0.5">
+                <div className="flex items-center gap-1.5 mt-0.5">
                   <button
                     type="button"
                     onClick={() => updateQuantity(index, -1)}
@@ -41,9 +41,20 @@ const Cart = ({ cart, total, removeFromCart, updateQuantity, saveCart }) => {
                   >
                     +
                   </button>
+                  <button
+                    type="button"
+                    onClick={() => updateQuantity(index, -item.quantity)}
+                    className="ml-4 inline-flex items-center justify-center w-7 h-7 rounded border border-slate-300 bg-white text-slate-400 text-sm transition hover:border-red-400 hover:bg-red-50 hover:text-red-500 active:bg-red-100 hover:cursor-pointer"
+                    aria-label="Remove from cart"
+                  >
+                    <i
+                      className="fa-regular fa-trash text-[12px]"
+                      aria-hidden
+                    />
+                  </button>
                 </div>
               </div>
-              <div className="flex-shrink-0 text-right font-semibold text-slate-900 tabular-nums">
+              <div className="flex-shrink-0 pt-0.5 text-right font-semibold text-slate-900 tabular-nums">
                 ${lineTotal.toFixed(2)}
               </div>
             </li>
@@ -51,17 +62,27 @@ const Cart = ({ cart, total, removeFromCart, updateQuantity, saveCart }) => {
         })}
       </ul>
       <div className="pt-4 mt-8 border-t border-slate-300">
-        <div className="text-sm font-semibold text-right text-slate-700">
+        <div className="text-sm font-semibold text-right text-slate-900">
           Total: ${total.toFixed(2)}
         </div>
-        <button
-          type="button"
-          disabled={cart.length === 0}
-          className="w-full mt-8 text-base p-4 font-semibold tracking-wide text-white uppercase transition bg-green-600 border border-green-600 hover:bg-green-700 active:bg-green-800 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-green-600"
-          onClick={saveCart}
-        >
-          Save Cart
-        </button>
+        <div className="flex gap-4">
+          <button
+            type="button"
+            disabled={cart.length === 0}
+            className="w-full mt-8 text-base p-4 font-semibold tracking-wide text-slate-400 uppercase transition border-2 border-slate-400 hover:bg-slate-700 hover:cursor-pointer hover:text-white hover:border-slate-700 active:bg-slate-800 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-green-600"
+            onClick={saveCart}
+          >
+            Save Cart
+          </button>
+          <button
+            type="button"
+            disabled={cart.length === 0}
+            className="w-full mt-8 text-base p-4 font-semibold tracking-wide text-white uppercase transition bg-green-600 border-2 border-green-600 hover:bg-green-700 hover:cursor-pointer active:bg-green-800 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-green-600"
+            onClick={saveCart}
+          >
+            Check Out
+          </button>
+        </div>
       </div>
     </div>
   );
