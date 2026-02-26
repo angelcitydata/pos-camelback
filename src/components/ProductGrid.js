@@ -56,9 +56,12 @@ const ProductGrid = ({ products, cart, addToCart }) => {
       <div className="flex flex-1 min-h-0 flex-col pt-1.5">
         <div className="scrollbar-hide grid flex-1 min-h-0 grid-cols-2 auto-rows-[17rem] gap-4 overflow-y-auto md:grid-cols-3 xl:grid-cols-4">
           {sortedVariants.map((variant) => {
-            const cartId = `${selectedProduct.id}-${variant.id}`;
             const quantityInCart =
-              cart.find((item) => item.id === cartId)?.quantity ?? 0;
+              cart.find(
+                (item) =>
+                  item.productId === selectedProduct.id &&
+                  item.variantId === variant.id
+              )?.quantity ?? 0;
 
             return (
               <VariantCard
@@ -68,7 +71,8 @@ const ProductGrid = ({ products, cart, addToCart }) => {
                 quantityInCart={quantityInCart}
                 onClick={() =>
                   addToCart({
-                    id: cartId,
+                    productId: selectedProduct.id,
+                    variantId: variant.id,
                     name:
                       variant.name === "Default Title"
                         ? selectedProduct.name

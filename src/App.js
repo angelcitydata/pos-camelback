@@ -3,19 +3,23 @@ import ProductGrid from "./components/ProductGrid";
 import Cart from "./components/Cart";
 import Filter from "./components/Filter";
 
-function App({ products, orderNumber }) {
+function App({ products, orderNumber, orderId,step }) {
+  console.log(orderId, orderNumber);
   const updatedProducts = products.map((product) => {
     const fieldData = product.fieldData || {};
     const variants = (product.portalData?.prod_VARIANT || []).map(
       (variant) => ({
-        id: Number(variant.recordId) || variant.recordId,
+        id:
+          Number(variant["prod_VARIANT::__kp_Variant_ID"]) ||
+          variant["prod_VARIANT::__kp_Variant_ID"] ||
+          Number(variant.recordId) ||
+          variant.recordId,
         productId: Number(fieldData.__kp_Product_ID) || product.recordId,
         name: variant["prod_VARIANT::Description__c"] || "Variant",
         price: Number(variant["prod_VARIANT::Price"]) || 0,
         sortOrder: Number(variant["prod_VARIANT::SortOrder"]) || 0,
       })
     );
-
     const collectionPortalData =
       product.portalData?.prod_colljoin_COLL ||
       product.portalData?.prod_COLLECTION__vl ||
@@ -101,13 +105,34 @@ function App({ products, orderNumber }) {
   }, [filter, filterMode, products]);
 
   const saveCart = (action) => {
-    const json = { cart, action, orderNumber };
-    FileMaker.PerformScript("Save Cart", JSON.stringify(json));
+    const filemakerCart = cart.map((item) => ({
+      action: "create",
+      layouts: "api_orderItems",
+      fieldData: {
+        ItemName: item.name,
+        // Price__lu: item.price,
+        Qty: item.quantity,
+        Unit: item.unit || "",
+        _kf_OrderID: orderId,
+        _kf_ProductID: item.productId,
+        _kf_VariantID: item.variantId,
+      },
+    }));
+    const cartData = {
+      action,
+      orderId,
+      items: filemakerCart,
+    };
+    FileMaker.PerformScript("Save Cart", JSON.stringify(cartData));
     setCart([]);
   };
   const addToCart = (product) => {
     setCart((prevCart) => {
-      const productIndex = prevCart.findIndex((item) => item.id === product.id);
+      const productIndex = prevCart.findIndex(
+        (item) =>
+          item.productId === product.productId &&
+          item.variantId === product.variantId
+      );
       if (productIndex !== -1) {
         return prevCart.map((item, index) =>
           index === productIndex
@@ -185,6 +210,7 @@ function App({ products, orderNumber }) {
               removeFromCart={removeFromCart}
               updateQuantity={updateQuantity}
               saveCart={saveCart}
+              step={step}
             />
           </div>
         </div>

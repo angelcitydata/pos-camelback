@@ -1,14 +1,29 @@
 import App from "./App";
+import PreOrder from "./PreOrder";
 import React from "react";
 import { createRoot } from "react-dom/client";
 // import { products } from "./products";
 window.loadApp = (json) => {
   const obj = JSON.parse(json);
-  const products = obj.products;
-  const orderNumber = obj.orderNumber;
+  console.log(obj);
+  const { products, orderNumber, orderId, step = "newOrder" } = obj;
   // alert("Products loaded: " + products.length);
   const container = document.getElementById("root");
   const root = createRoot(container);
 
-  root.render(<App products={products} orderNumber={orderNumber} />);
+  root.render(
+    <App
+      products={products}
+      orderNumber={orderNumber}
+      orderId={orderId}
+      step={step}
+    />
+  );
 };;
+
+window.loadPreOrder = () => {
+  const container = document.getElementById("root");
+  const root = createRoot(container);
+
+  root.render(<PreOrder />);
+};

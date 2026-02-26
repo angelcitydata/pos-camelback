@@ -1,7 +1,14 @@
 import React from "react";
 import Blob, { DEFAULT_BLOB_INDEX } from "./Blob";
 
-const Cart = ({ cart, total, removeFromCart, updateQuantity, saveCart }) => {
+const Cart = ({
+  cart,
+  total,
+  removeFromCart,
+  updateQuantity,
+  saveCart,
+  step,
+}) => {
   const isEmpty = cart.length === 0;
 
   return (
@@ -33,9 +40,13 @@ const Cart = ({ cart, total, removeFromCart, updateQuantity, saveCart }) => {
         <ul className="flex-1 min-h-0 overflow-y-auto scrollbar-hide">
           {cart.map((item, index) => {
             const lineTotal = item.price * item.quantity;
+            const itemKey =
+              item.productId != null && item.variantId != null
+                ? `${item.productId}-${item.variantId}`
+                : `${item.name}-${index}`;
             return (
               <li
-                key={index}
+                key={itemKey}
                 className="group flex items-start justify-between gap-3 py-4 text-[14px] border-b border-slate-200 last:border-b-0"
               >
                 <div className="flex flex-col gap-1.5 min-w-0 flex-1">
@@ -87,29 +98,43 @@ const Cart = ({ cart, total, removeFromCart, updateQuantity, saveCart }) => {
         </ul>
       )}
       <div className="pt-4 mt-8 border-t border-slate-300">
-        <div className="text-sm font-semibold text-right text-slate-900">
-          Total: ${total.toFixed(2)}
-        </div>
-        <div className="flex gap-4">
-          <button
-            type="button"
-            disabled={cart.length === 0}
-            className="w-full p-4 mt-8 text-base font-semibold tracking-wide uppercase transition border-2 rounded-lg text-slate-400 border-slate-400 hover:bg-slate-700 hover:cursor-pointer hover:text-white hover:border-slate-700 active:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-green-600"
-            onClick={() => saveCart("save")}
-          >
-            Save Cart
-          </button>
+        {step === "newOrder" && (
+          <div className="text-sm font-semibold text-right text-slate-900">
+            Total: ${total.toFixed(2)}
+          </div>
+        )}
+        {step === "newOrder" && (
+          <div className="flex gap-4">
+            <button
+              type="button"
+              disabled={cart.length === 0}
+              className="w-full p-4 mt-8 text-base font-semibold tracking-wide uppercase transition border-2 rounded-lg text-slate-400 border-slate-400 hover:bg-slate-700 hover:cursor-pointer hover:text-white hover:border-slate-700 active:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-green-600"
+              onClick={() => saveCart("save")}
+            >
+              Save Cart
+            </button>
+            <button
+              type="button"
+              disabled={cart.length === 0}
+              className="w-full p-4 mt-8 text-base font-semibold tracking-wide text-white uppercase transition bg-green-600 border-2 border-green-600 rounded-lg hover:bg-green-700 hover:cursor-pointer active:bg-green-800 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-green-600"
+              onClick={() => {
+                saveCart("checkout");
+              }}
+            >
+              Check Out
+            </button>
+          </div>
+        )}
+        {step === "add" && (
           <button
             type="button"
             disabled={cart.length === 0}
             className="w-full p-4 mt-8 text-base font-semibold tracking-wide text-white uppercase transition bg-green-600 border-2 border-green-600 rounded-lg hover:bg-green-700 hover:cursor-pointer active:bg-green-800 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-green-600"
-            onClick={() => {
-              saveCart("checkout");
-            }}
+            onClick={() => saveCart("addToOrder")}
           >
-            Check Out
+            Add to Order
           </button>
-        </div>
+        )}
       </div>
     </div>
   );
