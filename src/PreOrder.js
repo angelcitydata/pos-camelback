@@ -34,7 +34,14 @@ function PreOrder() {
 
             <div className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold tracking-wide text-green-700 uppercase border border-green-200 rounded-full bg-green-50">
               <i className="fa-solid fa-arrow-up-right" aria-hidden />
-              Tap New Order to start
+              <button
+                className="transition-colors cursor-pointer hover:text-green-800"
+                onClick={() => {
+                  FileMaker.PerformScript("Create Order from Dashboard");
+                }}
+              >
+                Click here to start a new order.
+              </button>
             </div>
           </div>
         </section>
