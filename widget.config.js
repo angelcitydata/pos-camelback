@@ -1,4 +1,3 @@
-
 module.exports = {
   widgetName: "jm-pos",
   server: "$",
