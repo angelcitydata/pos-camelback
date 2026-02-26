@@ -16,24 +16,10 @@ const PRODUCT_TYPE_ICONS = {
   "Gift Boxes": "gift",
 };
 
-const COLLECTION_ICONS = {
-  "Top Ten": TOP_TEN_ICON,
-  "Back to School": "graduation-cap",
-  "Books & Stationary": "book",
-  Pantry: "jar",
-  "Summer 2025": "sun",
-  Sweets: "candy-cane",
-  "Flowers Under $100": "coins",
-  "Home Fragrance": "spray-can-sparkles",
-  "Home & Objects": "couch",
-  "Table Centerpieces": "wine-glass",
-  "Plant Collection": "seedling",
-  Orchids: "spa",
-  "Winter Collection 2025": "snowflake",
-  Romance: "heart",
-  "Wine & Flower Gifts": "wine-bottle",
-  "Weddings & Events": "ring",
-};
+function getCollectionIcon(filterLabel, collections) {
+  if (!collections || typeof collections !== "object") return null;
+  return collections[filterLabel] ?? null;
+}
 
 /**
  * Returns the Font Awesome icon name (e.g. "star") for a filter label,
@@ -41,11 +27,13 @@ const COLLECTION_ICONS = {
  *
  * @param {string} filterLabel - e.g. "Top Ten", "Edibles", "Back to School"
  * @param {string} filterMode - "Collections" | "Product Type"
+ * @param {Object<string, string>} collections - FileMaker map of collection label -> icon name
  * @returns {string|null}
  */
-export function getFilterIcon(filterLabel, filterMode) {
+export function getFilterIcon(filterLabel, filterMode, collections = {}) {
   if (!filterLabel) return null;
   if (filterLabel === "Top Ten") return TOP_TEN_ICON;
-  if (filterMode === "Product Type") return PRODUCT_TYPE_ICONS[filterLabel] ?? null;
-  return COLLECTION_ICONS[filterLabel] ?? null;
+  if (filterMode === "Product Type")
+    return PRODUCT_TYPE_ICONS[filterLabel] ?? null;
+  return getCollectionIcon(filterLabel, collections);
 }

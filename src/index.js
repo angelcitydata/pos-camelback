@@ -6,7 +6,13 @@ import { createRoot } from "react-dom/client";
 window.loadApp = (json) => {
   const obj = JSON.parse(json);
   console.log(obj);
-  const { products, orderNumber, orderId, step = "newOrder" } = obj;
+  const {
+    products,
+    orderNumber,
+    orderId,
+    step = "newOrder",
+    collections,
+  } = obj;
   // alert("Products loaded: " + products.length);
   const container = document.getElementById("root");
   const root = createRoot(container);
@@ -17,6 +23,7 @@ window.loadApp = (json) => {
       orderNumber={orderNumber}
       orderId={orderId}
       step={step}
+      collections={collections}
     />
   );
 };;

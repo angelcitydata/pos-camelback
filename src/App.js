@@ -3,7 +3,7 @@ import ProductGrid from "./components/ProductGrid";
 import Cart from "./components/Cart";
 import Filter from "./components/Filter";
 
-function App({ products, orderNumber, orderId,step }) {
+function App({ products, orderNumber, orderId, step, collections }) {
   console.log(orderId, orderNumber);
   const updatedProducts = products.map((product) => {
     const fieldData = product.fieldData || {};
@@ -188,6 +188,7 @@ function App({ products, orderNumber, orderId,step }) {
         <div className="grid h-[calc(100vh-2.5rem)] grid-cols-12 gap-4 p-2">
           <div className="min-h-0 col-span-12 p-4 md:col-span-2">
             <Filter
+              collections={collections}
               setFilter={setFilter}
               selectedFilter={filter}
               filters={menuItems}
