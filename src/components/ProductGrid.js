@@ -8,8 +8,12 @@ const ProductGrid = ({ products, cart, addToCart }) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
+    const sortedProducts = [...products].sort((a, b) =>
+      (a.name || "").localeCompare(b.name || "")
+    );
+
     setAnimatedProducts(
-      products.map((product) => ({
+      sortedProducts.map((product) => ({
         ...product,
         animate: true,
       }))
@@ -17,7 +21,7 @@ const ProductGrid = ({ products, cart, addToCart }) => {
 
     const timeout = setTimeout(() => {
       setAnimatedProducts(
-        products.map((product) => ({
+        sortedProducts.map((product) => ({
           ...product,
           animate: false,
         }))
@@ -52,9 +56,12 @@ const ProductGrid = ({ products, cart, addToCart }) => {
       <div className="flex flex-1 min-h-0 flex-col pt-1.5">
         <div className="scrollbar-hide grid flex-1 min-h-0 grid-cols-2 auto-rows-[17rem] gap-4 overflow-y-auto md:grid-cols-3 xl:grid-cols-4">
           {sortedVariants.map((variant) => {
-            const cartId = `${selectedProduct.id}-${variant.id}`;
             const quantityInCart =
-              cart.find((item) => item.id === cartId)?.quantity ?? 0;
+              cart.find(
+                (item) =>
+                  item.productId === selectedProduct.id &&
+                  item.variantId === variant.id
+              )?.quantity ?? 0;
 
             return (
               <VariantCard
@@ -64,7 +71,8 @@ const ProductGrid = ({ products, cart, addToCart }) => {
                 quantityInCart={quantityInCart}
                 onClick={() =>
                   addToCart({
-                    id: cartId,
+                    productId: selectedProduct.id,
+                    variantId: variant.id,
                     name:
                       variant.name === "Default Title"
                         ? selectedProduct.name
@@ -81,27 +89,27 @@ const ProductGrid = ({ products, cart, addToCart }) => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-white p-4 rounded-2xl">
+    <div className="flex flex-col h-full p-4 bg-white rounded-2xl">
       <div className="flex items-center gap-2 px-1 pb-1.5">
         {selectedProduct ? (
           <>
             <button
               type="button"
               onClick={() => setSelectedProduct(null)}
-              className="flex items-center justify-center w-8 h-8 rounded-lg text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
+              className="flex items-center justify-center w-8 h-8 transition rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900"
               aria-label="Back to products"
             >
               <i
-                className="fa-solid fa-arrow-left text-lg hover:cursor-pointer"
+                className="text-lg fa-solid fa-arrow-left hover:cursor-pointer"
                 aria-hidden
               />
             </button>
-            <h2 className="text-base font-semibold tracking-wide text-slate-900 uppercase">
+            <h2 className="text-base font-semibold tracking-wide uppercase text-slate-900">
               {selectedProduct.name}
             </h2>
           </>
         ) : (
-          <h2 className="text-base font-semibold tracking-wide text-slate-900 uppercase">
+          <h2 className="text-base font-semibold tracking-wide uppercase text-slate-900">
             Products
           </h2>
         )}

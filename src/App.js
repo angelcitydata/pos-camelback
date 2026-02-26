@@ -3,18 +3,23 @@ import ProductGrid from "./components/ProductGrid";
 import Cart from "./components/Cart";
 import Filter from "./components/Filter";
 
-function App({ products }) {
+function App({ products, orderNumber, orderId,step }) {
+  console.log(orderId, orderNumber);
   const updatedProducts = products.map((product) => {
     const fieldData = product.fieldData || {};
     const variants = (product.portalData?.prod_VARIANT || []).map(
       (variant) => ({
-        id: Number(variant.recordId) || variant.recordId,
+        id:
+          Number(variant["prod_VARIANT::__kp_Variant_ID"]) ||
+          variant["prod_VARIANT::__kp_Variant_ID"] ||
+          Number(variant.recordId) ||
+          variant.recordId,
+        productId: Number(fieldData.__kp_Product_ID) || product.recordId,
         name: variant["prod_VARIANT::Description__c"] || "Variant",
         price: Number(variant["prod_VARIANT::Price"]) || 0,
         sortOrder: Number(variant["prod_VARIANT::SortOrder"]) || 0,
       })
     );
-
     const collectionPortalData =
       product.portalData?.prod_colljoin_COLL ||
       product.portalData?.prod_COLLECTION__vl ||
@@ -29,9 +34,7 @@ function App({ products }) {
       .filter(Boolean);
 
     const thumbBase64 = fieldData.ThumbBase64;
-    const image = thumbBase64
-      ? `data:image/png;base64,${thumbBase64}`
-      : null;
+    const image = thumbBase64 ? `data:image/png;base64,${thumbBase64}` : null;
 
     return {
       id: Number(fieldData.__kp_Product_ID) || product.recordId,
@@ -48,10 +51,10 @@ function App({ products }) {
     ...new Set(
       updatedProducts.flatMap((product) => product.collections).filter(Boolean)
     ),
-  ];
+  ].sort((a, b) => a.localeCompare(b));
   const productTypeFilters = [
     ...new Set(updatedProducts.map((product) => product.type).filter(Boolean)),
-  ];
+  ].sort((a, b) => a.localeCompare(b));
 
   const [cart, setCart] = useState([]);
   const [filterMode, setFilterMode] = useState("Collections");
@@ -62,6 +65,24 @@ function App({ products }) {
     filterMode === "Collections"
       ? ["Top Ten", ...collectionFilters]
       : ["Top Ten", ...productTypeFilters];
+
+  const filterCounts = {
+    "Top Ten": updatedProducts.filter((product) => product.isTopTen).length,
+  };
+
+  if (filterMode === "Collections") {
+    collectionFilters.forEach((collection) => {
+      filterCounts[collection] = updatedProducts.filter((product) =>
+        product.collections.includes(collection)
+      ).length;
+    });
+  } else {
+    productTypeFilters.forEach((type) => {
+      filterCounts[type] = updatedProducts.filter(
+        (product) => product.type === type
+      ).length;
+    });
+  }
 
   useEffect(() => {
     setFilter("Top Ten");
@@ -83,13 +104,35 @@ function App({ products }) {
     setFilteredProducts(filtered);
   }, [filter, filterMode, products]);
 
-  const saveCart = () => {
-    FileMaker.PerformScript("Save Cart", JSON.stringify(cart));
+  const saveCart = (action) => {
+    const filemakerCart = cart.map((item) => ({
+      action: "create",
+      layouts: "api_orderItems",
+      fieldData: {
+        ItemName: item.name,
+        // Price__lu: item.price,
+        Qty: item.quantity,
+        Unit: item.unit || "",
+        _kf_OrderID: orderId,
+        _kf_ProductID: item.productId,
+        _kf_VariantID: item.variantId,
+      },
+    }));
+    const cartData = {
+      action,
+      orderId,
+      items: filemakerCart,
+    };
+    FileMaker.PerformScript("Save Cart", JSON.stringify(cartData));
     setCart([]);
   };
   const addToCart = (product) => {
     setCart((prevCart) => {
-      const productIndex = prevCart.findIndex((item) => item.id === product.id);
+      const productIndex = prevCart.findIndex(
+        (item) =>
+          item.productId === product.productId &&
+          item.variantId === product.variantId
+      );
       if (productIndex !== -1) {
         return prevCart.map((item, index) =>
           index === productIndex
@@ -134,14 +177,21 @@ function App({ products }) {
 
   return (
     <div className="min-h-screen text-gray-700 bg-slate-100">
+      <div className="px-4 pt-4 text-left">
+        <div className="text-lg font-semibold tracking-wide text-slate-900">
+          Order #{orderNumber}
+        </div>
+      </div>
+
       {/* Main Content */}
       <div className="p-3 md:p-4">
-        <div className="grid h-[calc(100vh-2rem)] grid-cols-12 gap-4 p-2">
-          <div className="col-span-12 md:col-span-2 min-h-0 p-4">
+        <div className="grid h-[calc(100vh-2.5rem)] grid-cols-12 gap-4 p-2">
+          <div className="min-h-0 col-span-12 p-4 md:col-span-2">
             <Filter
               setFilter={setFilter}
               selectedFilter={filter}
               filters={menuItems}
+              filterCounts={filterCounts}
               filterMode={filterMode}
               setFilterMode={setFilterMode}
             />
@@ -160,6 +210,7 @@ function App({ products }) {
               removeFromCart={removeFromCart}
               updateQuantity={updateQuantity}
               saveCart={saveCart}
+              step={step}
             />
           </div>
         </div>

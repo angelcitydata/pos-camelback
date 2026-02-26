@@ -7,6 +7,7 @@ const Filter = ({
   setFilter,
   selectedFilter,
   filters,
+  filterCounts,
   filterMode,
   setFilterMode,
 }) => {
@@ -42,6 +43,7 @@ const Filter = ({
           <FilterCard
             key={filter}
             filter={filter}
+            count={filterCounts[filter] ?? 0}
             icon={getFilterIcon(filter, filterMode)}
             selected={selectedFilter === filter}
             onClick={() => setFilter(filter)}

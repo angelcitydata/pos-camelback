@@ -1,6 +1,6 @@
 module.exports = {
-  widgetName: "jm-pos",
+  widgetName: "pos",
   server: "$",
-  file: "jsDev",
+  file: "Camelback",
   uploadScript: "UploadToHTML",
 };
