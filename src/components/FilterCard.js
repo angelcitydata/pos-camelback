@@ -3,7 +3,7 @@ import React from "react";
 const tileButtonClass =
   "flex flex-col w-full gap-1 justify-center items-center bg-white p-8 rounded-xl text-left transition hover:bg-green-100 active:bg-green-200 hover:cursor-pointer";
 
-export default function FilterCard({ filter, icon, selected, onClick }) {
+export default function FilterCard({ filter, count, icon, selected, onClick }) {
   return (
     <button
       className={`${tileButtonClass} ${
@@ -27,6 +27,13 @@ export default function FilterCard({ filter, icon, selected, onClick }) {
         }`}
       >
         {filter}
+      </p>
+      <p
+        className={`text-[11px] font-medium ${
+          selected ? "text-green-700" : "text-slate-500"
+        }`}
+      >
+        ({count})
       </p>
     </button>
   );
