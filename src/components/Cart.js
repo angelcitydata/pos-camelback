@@ -13,7 +13,7 @@ const Cart = ({
 
   return (
     <div className="flex flex-col h-full p-4 bg-white rounded-2xl">
-      <h2 className="px-1 pb-1.5 text-base font-semibold tracking-wide text-slate-900 uppercase">
+      <h2 className="px-1 pb-4 text-base font-semibold tracking-wide text-slate-900 uppercase">
         Cart
       </h2>
       {isEmpty ? (

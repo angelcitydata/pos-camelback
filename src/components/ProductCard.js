@@ -6,11 +6,19 @@ import ProductTag from "./ProductTag";
 const tileButtonClass =
   "group relative flex flex-col gap-1 justify-start h-full min-h-0 w-full rounded-2xl overflow-hidden bg-slate-50/75 p-4 text-left transition-all duration-300 hover:bg-green-500/90 active:bg-green-200 hover:cursor-pointer hover:shadow-lg hover:shadow-slate-200/50";
 
-export default function ProductCard({ product, onClick }) {
+export default function ProductCard({ product, onClick, quantityInCart = 0 }) {
   const collections = product.collections || [];
 
   return (
     <button type="button" className={tileButtonClass} onClick={onClick}>
+      {quantityInCart > 0 && (
+        <span
+          className="absolute top-3 right-3 z-20 flex min-w-[1.5rem] items-center justify-center rounded-full bg-green-500 px-2 py-0.5 text-xs font-semibold tabular-nums text-white shadow-sm transition group-hover:bg-white group-hover:text-green-600"
+          aria-label={`${quantityInCart} in cart`}
+        >
+          {quantityInCart}
+        </span>
+      )}
       {/* Blob as card background: large, centered, clipped by card */}
       <div
         className="pointer-events-none absolute inset-0 flex items-center justify-center"

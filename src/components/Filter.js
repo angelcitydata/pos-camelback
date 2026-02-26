@@ -10,10 +10,12 @@ const Filter = ({
   filterCounts,
   filterMode,
   setFilterMode,
+  collections,
 }) => {
+  console.log(collections);
   return (
     <div className="flex flex-col h-full min-h-0">
-      <h2 className="px-1 pb-1.5 text-base font-semibold tracking-wide text-slate-900 uppercase">
+      <h2 className="px-1 pb-4 text-base font-semibold tracking-wide text-slate-900 uppercase">
         Filters
       </h2>
       <div className="grid grid-cols-2 my-1.5 rounded-full overflow-hidden bg-slate-200">
@@ -38,13 +40,13 @@ const Filter = ({
           Product Type
         </button>
       </div>
-      <div className="scrollbar-hide flex flex-col min-h-0 flex-1 space-y-1 overflow-y-auto mt-2 gap-2">
+      <div className="flex flex-col flex-1 min-h-0 gap-2 mt-2 space-y-1 overflow-y-auto scrollbar-hide">
         {filters.map((filter) => (
           <FilterCard
             key={filter}
             filter={filter}
             count={filterCounts[filter] ?? 0}
-            icon={getFilterIcon(filter, filterMode)}
+            icon={getFilterIcon(filter, filterMode, collections)}
             selected={selectedFilter === filter}
             onClick={() => setFilter(filter)}
           />
