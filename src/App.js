@@ -3,8 +3,7 @@ import ProductGrid from "./components/ProductGrid";
 import Cart from "./components/Cart";
 import Filter from "./components/Filter";
 
-function App({ products, orderNumber, orderId, step, collections }) {
-  console.log(orderId, orderNumber);
+function App({ products, orderNumber, orderId, step, collections, recordId }) {
   const updatedProducts = products.map((product) => {
     const fieldData = product.fieldData || {};
     const variants = (product.portalData?.prod_VARIANT || []).map(
@@ -121,10 +120,11 @@ function App({ products, orderNumber, orderId, step, collections }) {
     const cartData = {
       action,
       orderId,
+      recordId,
       items: filemakerCart,
     };
     FileMaker.PerformScript("Save Cart", JSON.stringify(cartData));
-    setCart([]);
+    // setCart([]);
   };
   const addToCart = (product) => {
     setCart((prevCart) => {

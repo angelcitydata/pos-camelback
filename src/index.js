@@ -10,6 +10,7 @@ window.loadApp = (json) => {
     products,
     orderNumber,
     orderId,
+    recordId,
     step = "newOrder",
     collections,
   } = obj;
@@ -24,6 +25,7 @@ window.loadApp = (json) => {
       orderId={orderId}
       step={step}
       collections={collections}
+      recordId={recordId}
     />
   );
 };;

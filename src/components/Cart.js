@@ -13,7 +13,7 @@ const Cart = ({
 
   return (
     <div className="flex flex-col h-full p-4 bg-white rounded-2xl">
-      <h2 className="px-1 pb-4 text-base font-semibold tracking-wide text-slate-900 uppercase">
+      <h2 className="px-1 pb-4 text-base font-semibold tracking-wide uppercase text-slate-900">
         Cart
       </h2>
       {isEmpty ? (
@@ -108,7 +108,7 @@ const Cart = ({
             <button
               type="button"
               disabled={cart.length === 0}
-              className="w-full p-4 mt-8 text-base font-semibold tracking-wide uppercase transition border-2 rounded-lg text-slate-400 border-slate-400 hover:bg-slate-700 hover:cursor-pointer hover:text-white hover:border-slate-700 active:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-green-600"
+              className="flex-1 p-4 mt-8 text-base font-semibold tracking-wide uppercase transition border-2 rounded-lg text-slate-400 border-slate-400 hover:bg-slate-700 hover:cursor-pointer hover:text-white hover:border-slate-700 active:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-green-600"
               onClick={() => saveCart("save")}
             >
               Save Cart
@@ -116,24 +116,40 @@ const Cart = ({
             <button
               type="button"
               disabled={cart.length === 0}
-              className="w-full p-4 mt-8 text-base font-semibold tracking-wide text-white uppercase transition bg-green-600 border-2 border-green-600 rounded-lg hover:bg-green-700 hover:cursor-pointer active:bg-green-800 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-green-600"
+              className="flex-1 p-4 mt-8 text-base font-semibold tracking-wide text-white uppercase transition bg-green-600 border-2 border-green-600 rounded-lg hover:bg-green-700 hover:cursor-pointer active:bg-green-800 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-green-600"
               onClick={() => {
                 saveCart("checkout");
               }}
             >
               Check Out
             </button>
+            <button
+              type="button"
+              className="mt-8 px-4 py-2.5 text-sm font-semibold tracking-wide uppercase transition border-2 rounded-lg text-slate-600 bg-slate-100 border-slate-300 hover:bg-slate-200 hover:cursor-pointer active:bg-slate-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-slate-100"
+              onClick={() => saveCart("cancelOrder")}
+            >
+              Cancel
+            </button>
           </div>
         )}
         {step === "add" && (
-          <button
-            type="button"
-            disabled={cart.length === 0}
-            className="w-full p-4 mt-8 text-base font-semibold tracking-wide text-white uppercase transition bg-green-600 border-2 border-green-600 rounded-lg hover:bg-green-700 hover:cursor-pointer active:bg-green-800 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-green-600"
-            onClick={() => saveCart("addToOrder")}
-          >
-            Add to Order
-          </button>
+          <div className="flex gap-4 mt-8">
+            <button
+              type="button"
+              disabled={cart.length === 0}
+              className="flex-1 p-4 text-base font-semibold tracking-wide text-white uppercase transition bg-green-600 border-2 border-green-600 rounded-lg hover:bg-green-700 hover:cursor-pointer active:bg-green-800 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-green-600"
+              onClick={() => saveCart("addToOrder")}
+            >
+              Add to Order
+            </button>
+            <button
+              type="button"
+              className="px-4 py-2.5 text-sm font-semibold tracking-wide uppercase transition border-2 rounded-lg text-slate-600 bg-slate-100 border-slate-300 hover:bg-slate-200 hover:cursor-pointer active:bg-slate-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-slate-100"
+              onClick={() => saveCart("cancelAdd")}
+            >
+              Cancel
+            </button>
+          </div>
         )}
       </div>
     </div>

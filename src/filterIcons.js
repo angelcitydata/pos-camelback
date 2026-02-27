@@ -32,7 +32,7 @@ const PRODUCT_TYPE_ICONS = {
   "Shop by Products": "store",
   "Shop Supplies": "box-open",
   Spirits: "martini-glass",
-  Vase: "vase",
+  Vase: "jug-bottle",
   "With Sympathy": "heart-crack",
   Wine: "wine-bottle",
   Wraps: "ribbon",
