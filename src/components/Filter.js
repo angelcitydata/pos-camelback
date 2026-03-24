@@ -12,7 +12,6 @@ const Filter = ({
   setFilterMode,
   collections,
 }) => {
-  console.log(collections);
   return (
     <div className="flex flex-col h-full min-h-0">
       <h2 className="px-1 pb-4 text-base font-semibold tracking-wide text-slate-900 uppercase">

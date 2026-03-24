@@ -2,8 +2,56 @@ import React, { useState, useEffect } from "react";
 import ProductGrid from "./components/ProductGrid";
 import Cart from "./components/Cart";
 import Filter from "./components/Filter";
+import OrderIsComplete from "./components/OrderIsComplete";
+import CustomerSelect from "./components/CustomerSelect";
+const normalizeDeliveryAddresses = (rawAddresses) => {
+  if (!rawAddresses) {
+    return [];
+  }
 
-function App({ products, orderNumber, orderId, step, collections, recordId }) {
+  if (Array.isArray(rawAddresses)) {
+    return rawAddresses
+      .map((entry) => {
+        if (typeof entry === "string") {
+          return entry.trim();
+        }
+
+        if (entry && typeof entry === "object") {
+          return (
+            entry.label ||
+            entry.address ||
+            entry.name ||
+            entry.value ||
+            ""
+          )
+            .toString()
+            .trim();
+        }
+
+        return "";
+      })
+      .filter(Boolean);
+  }
+
+  if (typeof rawAddresses === "string") {
+    return rawAddresses
+      .split(/\r?\n/)
+      .map((entry) => entry.trim())
+      .filter(Boolean);
+  }
+
+  return [];
+};
+
+function App({
+  products,
+  orderNumber,
+  orderId,
+  step,
+  collections,
+  recordId,
+  initialDeliveryAddresses = [],
+}) {
   const updatedProducts = products.map((product) => {
     const fieldData = product.fieldData || {};
     const variants = (product.portalData?.prod_VARIANT || []).map(
@@ -56,6 +104,11 @@ function App({ products, orderNumber, orderId, step, collections, recordId }) {
   ].sort((a, b) => a.localeCompare(b));
 
   const [cart, setCart] = useState([]);
+  const [orderStatus, setOrderStatus] = useState("open");
+  const [customer, setCustomer] = useState(null);
+  const [deliveryAddresses, setDeliveryAddresses] = useState(
+    normalizeDeliveryAddresses(initialDeliveryAddresses)
+  );
   const [filterMode, setFilterMode] = useState("Collections");
   const [filter, setFilter] = useState("Top Ten");
   const [filteredProducts, setFilteredProducts] = useState(updatedProducts);
@@ -103,7 +156,41 @@ function App({ products, orderNumber, orderId, step, collections, recordId }) {
     setFilteredProducts(filtered);
   }, [filter, filterMode, products]);
 
+  const buildOrderGroups = (items) => {
+    const groups = [];
+
+    items.forEach((item, index) => {
+      const fulfillmentType = item.fulfillmentType || "pickup";
+      const rawAddress = (item.deliveryAddress || "").trim();
+      const addressLabel = rawAddress || "Unassigned Delivery Address";
+      const groupKey =
+        fulfillmentType === "delivery"
+          ? `delivery:${addressLabel.toLowerCase()}`
+          : "pickup";
+
+      let group = groups.find((entry) => entry.groupKey === groupKey);
+      if (!group) {
+        group = {
+          groupKey,
+          fulfillmentType,
+          deliveryAddress: fulfillmentType === "delivery" ? rawAddress : "",
+          items: [],
+        };
+        groups.push(group);
+      }
+
+      group.items.push({ ...item, cartIndex: index });
+    });
+
+    return groups;
+  };
+
+  window.updateOrderStatus = (status) => {
+    setOrderStatus(status);
+  };
   const saveCart = (action) => {
+    const orderGroups = buildOrderGroups(cart);
+
     const filemakerCart = cart.map((item) => ({
       action: "create",
       layouts: "api_orderItems",
@@ -117,15 +204,37 @@ function App({ products, orderNumber, orderId, step, collections, recordId }) {
         _kf_VariantID: item.variantId,
       },
     }));
+
     const cartData = {
+      customer,
       action,
       orderId,
       recordId,
       items: filemakerCart,
+      splitIntoMultipleOrders: false,
+      orderGroups: orderGroups.map((group) => ({
+        groupKey: group.groupKey,
+        fulfillmentType: group.fulfillmentType,
+        deliveryAddress: group.deliveryAddress,
+        items: group.items.map((item) => ({
+          productId: item.productId,
+          variantId: item.variantId,
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price,
+          fulfillmentType: item.fulfillmentType || "pickup",
+          deliveryAddress:
+            item.fulfillmentType === "delivery"
+              ? item.deliveryAddress || ""
+              : "",
+        })),
+      })),
     };
+
     FileMaker.PerformScript("Save Cart", JSON.stringify(cartData));
     // setCart([]);
   };
+
   const addToCart = (product) => {
     setCart((prevCart) => {
       const productIndex = prevCart.findIndex(
@@ -140,7 +249,15 @@ function App({ products, orderNumber, orderId, step, collections, recordId }) {
             : item
         );
       } else {
-        return [...prevCart, { ...product, quantity: 1 }];
+        return [
+          ...prevCart,
+          {
+            ...product,
+            quantity: 1,
+            fulfillmentType: "pickup",
+            deliveryAddress: "",
+          },
+        ];
       }
     });
   };
@@ -170,6 +287,40 @@ function App({ products, orderNumber, orderId, step, collections, recordId }) {
     });
   };
 
+  const updateDeliveryAddress = (index, deliveryAddress) => {
+    setCart((prevCart) =>
+      prevCart.map((item, itemIndex) =>
+        itemIndex === index
+          ? {
+              ...item,
+              deliveryAddress,
+            }
+          : item
+      )
+    );
+  };
+
+  const addDeliveryAddress = (address) => {
+    const normalizedAddress = address.trim();
+    if (!normalizedAddress) {
+      return;
+    }
+
+    setDeliveryAddresses((prevAddresses) => {
+      if (
+        prevAddresses.some(
+          (existingAddress) =>
+            existingAddress.toLowerCase() === normalizedAddress.toLowerCase()
+        )
+      ) {
+        return prevAddresses;
+      }
+
+      return [...prevAddresses, normalizedAddress];
+    });
+  };
+
+  const orderGroups = buildOrderGroups(cart);
   const total = cart.reduce(
     (sum, product) => sum + product.price * product.quantity,
     0
@@ -177,10 +328,16 @@ function App({ products, orderNumber, orderId, step, collections, recordId }) {
 
   return (
     <div className="min-h-screen text-gray-700 bg-slate-100">
-      <div className="px-4 pt-4 text-left">
+      <div className="flex flex-col gap-4 px-4 pt-4 text-left md:flex-row md:items-center ">
         <div className="text-lg font-semibold tracking-wide text-slate-900">
           Order #{orderNumber}
         </div>
+        <CustomerSelect
+          selectedCustomer={customer}
+          onSelectCustomer={(customer) => {
+            setCustomer(customer);
+          }}
+        />
       </div>
 
       {/* Main Content */}
@@ -206,14 +363,20 @@ function App({ products, orderNumber, orderId, step, collections, recordId }) {
             />
           </div>
           <div className="min-h-0 col-span-12 md:col-span-4 lg:col-span-3">
-            <Cart
-              cart={cart}
-              total={total}
-              removeFromCart={removeFromCart}
-              updateQuantity={updateQuantity}
-              saveCart={saveCart}
-              step={step}
-            />
+            {orderStatus === "complete" ? (
+              <OrderIsComplete orderStatus={orderStatus} saveCart={saveCart} />
+            ) : (
+              <Cart
+                cart={cart}
+                step={step}
+                updateQuantity={updateQuantity}
+                updateDeliveryAddress={updateDeliveryAddress}
+                deliveryAddresses={deliveryAddresses}
+                addDeliveryAddress={addDeliveryAddress}
+                total={total}
+                saveCart={saveCart}
+              />
+            )}
           </div>
         </div>
       </div>

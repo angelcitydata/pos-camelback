@@ -1,6 +1,6 @@
 module.exports = {
   widgetName: "pos",
   server: "$",
-  file: "Camelback",
+  file: "cb_pos",
   uploadScript: "UploadToHTML",
 };

@@ -10,6 +10,8 @@ const Cart = ({
   step,
 }) => {
   const isEmpty = cart.length === 0;
+console.log(step);
+const disableOrderActions = cart.length === 0;
 
   return (
     <div className="flex flex-col h-full p-4 bg-white rounded-2xl">
@@ -18,7 +20,7 @@ const Cart = ({
       </h2>
       {isEmpty ? (
         <div className="flex flex-col items-center justify-center flex-1 min-h-0 gap-2 py-8">
-          <div className="relative grid flex-shrink-0 w-96 h-96 place-items-center">
+          <div className="relative grid shrink-0 w-96 h-96 place-items-center">
             <Blob
               index={DEFAULT_BLOB_INDEX}
               className="absolute inset-0 w-full h-full opacity-40"
@@ -44,6 +46,7 @@ const Cart = ({
               item.productId != null && item.variantId != null
                 ? `${item.productId}-${item.variantId}`
                 : `${item.name}-${index}`;
+
             return (
               <li
                 key={itemKey}
@@ -56,6 +59,7 @@ const Cart = ({
                   <span className="text-slate-500 text-[13px]">
                     ${item.price.toFixed(2)} x {item.quantity}
                   </span>
+                  {/* Fulfillment UI is commented out for now. */}
                   <div className="flex items-center gap-1.5 mt-0.5">
                     <button
                       type="button"
@@ -89,7 +93,7 @@ const Cart = ({
                     </button>
                   </div>
                 </div>
-                <div className="flex-shrink-0 pt-0.5 text-right font-semibold text-slate-900 tabular-nums">
+                <div className="shrink-0 pt-0.5 text-right font-semibold text-slate-900 tabular-nums">
                   ${lineTotal.toFixed(2)}
                 </div>
               </li>
@@ -98,6 +102,13 @@ const Cart = ({
         </ul>
       )}
       <div className="pt-4 mt-8 border-t border-slate-300">
+        {/* Delivery address input is commented out for now. */}
+
+        {/* Split into multiple orders UI is commented out for now. */}
+
+        {/* Delivery address validation message is commented out for now. */}
+
+        {/* Card message field is commented out for now. */}
         {step === "newOrder" && (
           <div className="text-sm font-semibold text-right text-slate-900">
             Total: ${total.toFixed(2)}
@@ -107,7 +118,7 @@ const Cart = ({
           <div className="flex gap-4">
             <button
               type="button"
-              disabled={cart.length === 0}
+              disabled={disableOrderActions}
               className="flex-1 p-4 mt-8 text-base font-semibold tracking-wide uppercase transition border-2 rounded-lg text-slate-400 border-slate-400 hover:bg-slate-700 hover:cursor-pointer hover:text-white hover:border-slate-700 active:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-green-600"
               onClick={() => saveCart("save")}
             >
@@ -115,7 +126,7 @@ const Cart = ({
             </button>
             <button
               type="button"
-              disabled={cart.length === 0}
+              disabled={disableOrderActions}
               className="flex-1 p-4 mt-8 text-base font-semibold tracking-wide text-white uppercase transition bg-green-600 border-2 border-green-600 rounded-lg hover:bg-green-700 hover:cursor-pointer active:bg-green-800 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-green-600"
               onClick={() => {
                 saveCart("checkout");
@@ -136,7 +147,7 @@ const Cart = ({
           <div className="flex gap-4 mt-8">
             <button
               type="button"
-              disabled={cart.length === 0}
+              disabled={disableOrderActions}
               className="flex-1 p-4 text-base font-semibold tracking-wide text-white uppercase transition bg-green-600 border-2 border-green-600 rounded-lg hover:bg-green-700 hover:cursor-pointer active:bg-green-800 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-green-600"
               onClick={() => saveCart("addToOrder")}
             >
