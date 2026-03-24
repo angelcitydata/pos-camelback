@@ -104,7 +104,7 @@ function App({
   ].sort((a, b) => a.localeCompare(b));
 
   const [cart, setCart] = useState([]);
-  const [orderStatus, setOrderStatus] = useState("complete");
+  const [orderStatus, setOrderStatus] = useState("open");
   const [customer, setCustomer] = useState(null);
   const [deliveryAddresses, setDeliveryAddresses] = useState(
     normalizeDeliveryAddresses(initialDeliveryAddresses)
@@ -332,12 +332,12 @@ function App({
         <div className="text-lg font-semibold tracking-wide text-slate-900">
           Order #{orderNumber}
         </div>
-        <CustomerSelect
+        {/* <CustomerSelect
           selectedCustomer={customer}
           onSelectCustomer={(customer) => {
             setCustomer(customer);
           }}
-        />
+        /> */}
       </div>
 
       {/* Main Content */}
@@ -375,6 +375,10 @@ function App({
                 addDeliveryAddress={addDeliveryAddress}
                 total={total}
                 saveCart={saveCart}
+                selectedCustomer={customer}
+                onSelectCustomer={(customer) => {
+                  setCustomer(customer);
+                }}
               />
             )}
           </div>

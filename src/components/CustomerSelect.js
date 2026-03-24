@@ -189,7 +189,7 @@ const CustomerSelect = ({ selectedCustomer, onSelectCustomer }) => {
         </span>
 
         {isOpen && debouncedQuery.length > 0 && (
-          <div className="absolute z-20 w-full mt-2 overflow-hidden bg-white border rounded-2xl border-slate-200">
+          <div className="absolute z-20 w-full bottom-full mb-2 overflow-hidden bg-white border rounded-2xl border-slate-200">
             <ul className="overflow-y-auto max-h-64">
               {isFetching && (
                 <li className="px-3 py-2 text-sm text-slate-500">Searching...</li>

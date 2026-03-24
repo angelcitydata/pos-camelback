@@ -1,6 +1,6 @@
 import React from "react";
 import Blob, { DEFAULT_BLOB_INDEX } from "./Blob";
-
+import CustomerSelect from "./CustomerSelect";
 const Cart = ({
   cart,
   total,
@@ -8,16 +8,19 @@ const Cart = ({
   updateQuantity,
   saveCart,
   step,
+  onSelectCustomer,
+  selectedCustomer,
 }) => {
   const isEmpty = cart.length === 0;
-console.log(step);
-const disableOrderActions = cart.length === 0;
+  console.log(step);
+  const disableOrderActions = cart.length === 0;
 
   return (
     <div className="flex flex-col h-full p-4 bg-white rounded-2xl">
       <h2 className="px-1 pb-4 text-base font-semibold tracking-wide uppercase text-slate-900">
         Cart
       </h2>
+
       {isEmpty ? (
         <div className="flex flex-col items-center justify-center flex-1 min-h-0 gap-2 py-8">
           <div className="relative grid shrink-0 w-96 h-96 place-items-center">
@@ -110,8 +113,14 @@ const disableOrderActions = cart.length === 0;
 
         {/* Card message field is commented out for now. */}
         {step === "newOrder" && (
-          <div className="text-sm font-semibold text-right text-slate-900">
-            Total: ${total.toFixed(2)}
+          <div>
+            <div className="text-sm font-semibold text-right text-slate-900">
+              Total: ${total.toFixed(2)}
+            </div>
+            <CustomerSelect
+              onSelectCustomer={onSelectCustomer}
+              selectedCustomer={selectedCustomer}
+            />
           </div>
         )}
         {step === "newOrder" && (
