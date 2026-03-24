@@ -104,7 +104,7 @@ function App({
   ].sort((a, b) => a.localeCompare(b));
 
   const [cart, setCart] = useState([]);
-  const [orderStatus, setOrderStatus] = useState("open");
+  const [orderStatus, setOrderStatus] = useState("complete");
   const [customer, setCustomer] = useState(null);
   const [deliveryAddresses, setDeliveryAddresses] = useState(
     normalizeDeliveryAddresses(initialDeliveryAddresses)
