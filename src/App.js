@@ -3,7 +3,6 @@ import ProductGrid from "./components/ProductGrid";
 import Cart from "./components/Cart";
 import Filter from "./components/Filter";
 import OrderIsComplete from "./components/OrderIsComplete";
-import CustomerSelect from "./components/CustomerSelect";
 const normalizeDeliveryAddresses = (rawAddresses) => {
   if (!rawAddresses) {
     return [];
