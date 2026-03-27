@@ -1,8 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import ProductGrid from "./components/ProductGrid";
 import Cart from "./components/Cart";
 import Filter from "./components/Filter";
 import OrderIsComplete from "./components/OrderIsComplete";
+import CheckoutPage from "./components/CheckoutPage";
+const confettiColors = [
+  "#10b981",
+  "#34d399",
+  "#f59e0b",
+  "#ef4444",
+  "#3b82f6",
+  "#f97316",
+];
+
 const normalizeDeliveryAddresses = (rawAddresses) => {
   if (!rawAddresses) {
     return [];
@@ -111,6 +121,26 @@ function App({
   const [filterMode, setFilterMode] = useState("Collections");
   const [filter, setFilter] = useState("Top Ten");
   const [filteredProducts, setFilteredProducts] = useState(updatedProducts);
+  const [showConfettiBurst, setShowConfettiBurst] = useState(false);
+  const [confettiBurstToken, setConfettiBurstToken] = useState(0);
+
+  const confettiPieces = useMemo(() => {
+    if (!showConfettiBurst) {
+      return [];
+    }
+
+    return Array.from({ length: 72 }, (_, index) => ({
+      id: `${confettiBurstToken}-${index}`,
+      left: `${Math.random() * 100}%`,
+      delay: `${Math.random() * 240}ms`,
+      duration: `${1300 + Math.random() * 900}ms`,
+      drift: `${-120 + Math.random() * 240}px`,
+      rise: `${55 + Math.random() * 30}vh`,
+      rotate: `${540 + Math.random() * 540}deg`,
+      size: `${6 + Math.random() * 8}px`,
+      color: confettiColors[index % confettiColors.length],
+    }));
+  }, [confettiBurstToken, showConfettiBurst]);
 
   const menuItems =
     filterMode === "Collections"
@@ -155,6 +185,28 @@ function App({
     setFilteredProducts(filtered);
   }, [filter, filterMode, products]);
 
+  useEffect(() => {
+    if (orderStatus === "complete") {
+      setCart([]);
+    }
+  }, [orderStatus]);
+
+  useEffect(() => {
+    if (orderStatus !== "complete") {
+      setShowConfettiBurst(false);
+      return;
+    }
+
+    setConfettiBurstToken((prevToken) => prevToken + 1);
+    setShowConfettiBurst(true);
+
+    const timeoutId = setTimeout(() => {
+      setShowConfettiBurst(false);
+    }, 2400);
+
+    return () => clearTimeout(timeoutId);
+  }, [orderStatus]);
+
   const buildOrderGroups = (items) => {
     const groups = [];
 
@@ -184,6 +236,16 @@ function App({
     return groups;
   };
 
+  const handleNewCustomer = () => {
+    FileMaker.PerformScript("New Customer at POS");
+  };
+  console.log(customer);
+  window.getNewCustomerFromFileMaker = (json) => {
+    const obj = JSON.parse(json);
+    const customer = obj.customer;
+    setCustomer(customer);
+    // You can add any additional handling logic here if needed
+  };
   window.updateOrderStatus = (status) => {
     setOrderStatus(status);
   };
@@ -327,6 +389,28 @@ function App({
 
   return (
     <div className="min-h-screen text-gray-700 bg-slate-100">
+      {showConfettiBurst && (
+        <div className="app-confetti-layer" aria-hidden>
+          {confettiPieces.map((piece) => (
+            <span
+              key={piece.id}
+              className="app-confetti-piece"
+              style={{
+                left: piece.left,
+                width: piece.size,
+                height: piece.size,
+                backgroundColor: piece.color,
+                "--confetti-delay": piece.delay,
+                "--confetti-duration": piece.duration,
+                "--confetti-drift": piece.drift,
+                "--confetti-rise": piece.rise,
+                "--confetti-rotate": piece.rotate,
+              }}
+            />
+          ))}
+        </div>
+      )}
+
       <div className="flex flex-col gap-4 px-4 pt-4 text-left md:flex-row md:items-center ">
         <div className="text-lg font-semibold tracking-wide text-slate-900">
           Order #{orderNumber}
@@ -374,6 +458,7 @@ function App({
                 addDeliveryAddress={addDeliveryAddress}
                 total={total}
                 saveCart={saveCart}
+                handleNewCustomer={handleNewCustomer}
                 selectedCustomer={customer}
                 onSelectCustomer={(customer) => {
                   setCustomer(customer);

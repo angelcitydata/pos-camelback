@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import FMGofer from "fm-gofer";
 import { useQuery } from "@tanstack/react-query";
 
+
 const getCustomerLabel = (customer) =>
   customer?.fieldData?.NameFull_ct || "Unnamed customer";
 
@@ -31,7 +32,11 @@ const parseCustomerResults = (rawResult) => {
   return rawResult?.response?.data || rawResult?.data || [];
 };
 
-const CustomerSelect = ({ selectedCustomer, onSelectCustomer }) => {
+const CustomerSelect = ({
+  selectedCustomer,
+  onSelectCustomer,
+  handleNewCustomer,
+}) => {
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -68,7 +73,10 @@ const CustomerSelect = ({ selectedCustomer, onSelectCustomer }) => {
     queryKey: ["customer-search", debouncedQuery],
     enabled: debouncedQuery.length > 0,
     queryFn: async () => {
-      const result = await FMGofer.PerformScript("Get Customers", debouncedQuery);
+      const result = await FMGofer.PerformScript(
+        "Get Customers",
+        debouncedQuery
+      );
       return parseCustomerResults(result);
     },
   });
@@ -150,89 +158,106 @@ const CustomerSelect = ({ selectedCustomer, onSelectCustomer }) => {
   };
 
   return (
-    <div className="flex flex-col gap-1.5" ref={containerRef}>
-      <label className="px-1 text-xs font-semibold tracking-widest uppercase text-slate-500">
-        Customer
-      </label>
+    <>
+      <div className="flex flex-col gap-1.5" ref={containerRef}>
+        <label className="px-1 text-xs font-semibold tracking-widest uppercase text-slate-500">
+          Customer
+        </label>
 
-      <div className="relative">
-        <span className="pointer-events-none absolute inset-y-0 left-3.5 flex items-center text-slate-400">
-          <i className="text-sm fa-regular fa-user" aria-hidden />
-        </span>
+        <div className="relative">
+          <span className="pointer-events-none absolute inset-y-0 left-3.5 flex items-center text-slate-400">
+            <i className="text-sm fa-regular fa-user" aria-hidden />
+          </span>
 
-        <input
-          type="text"
-          value={query}
-          onFocus={() => setIsOpen(true)}
-          onKeyDown={handleInputKeyDown}
-          onChange={(e) => {
-            const nextQuery = e.target.value;
-            setQuery(nextQuery);
-            setIsOpen(true);
-            setHighlightedIndex(-1);
-            if (!nextQuery.trim()) {
-              onSelectCustomer(null);
-            }
-          }}
-          placeholder="Search customer..."
-          className={`w-full pl-9 pr-9 py-3 text-sm font-medium rounded-2xl border transition-all
+          <div className="flex items-center w-full gap-5">
+            <input
+              type="text"
+              value={query}
+              onFocus={() => setIsOpen(true)}
+              onKeyDown={handleInputKeyDown}
+              onChange={(e) => {
+                const nextQuery = e.target.value;
+                setQuery(nextQuery);
+                setIsOpen(true);
+                setHighlightedIndex(-1);
+                if (!nextQuery.trim()) {
+                  onSelectCustomer(null);
+                }
+              }}
+              placeholder="Search customer..."
+              className={`w-full pl-9 pr-9 py-3 text-sm font-medium rounded-2xl border transition-all
             focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-green-400
             ${
               hasValue
                 ? "bg-green-50 border-green-300 text-green-900"
                 : "bg-white border-slate-200 text-slate-700 hover:border-slate-300"
             }`}
-        />
-
-        <span className="pointer-events-none absolute inset-y-0 right-3.5 flex items-center text-slate-400">
-          <i className="text-xs fa-regular fa-chevron-down" aria-hidden />
-        </span>
-
-        {isOpen && debouncedQuery.length > 0 && (
-          <div className="absolute z-20 w-full bottom-full mb-2 overflow-hidden bg-white border rounded-2xl border-slate-200">
-            <ul className="overflow-y-auto max-h-64">
-              {isFetching && (
-                <li className="px-3 py-2 text-sm text-slate-500">Searching...</li>
-              )}
-
-              {!isFetching && uniqueCustomers.length === 0 && (
-                <li className="px-3 py-2 text-sm text-slate-500">No customers found</li>
-              )}
-
-              {!isFetching &&
-                uniqueCustomers.map((customer, itemIndex) => {
-                  const customerKey = getCustomerKey(customer);
-                  const name = getCustomerLabel(customer);
-                  const personId = customer?.fieldData?.__kp_PersonID;
-                  const isHighlighted = highlightedIndex === itemIndex;
-
-                  return (
-                    <li key={customerKey}>
-                      <button
-                        type="button"
-                        onClick={() => handleSelectCustomer(customer)}
-                        onMouseEnter={() => setHighlightedIndex(itemIndex)}
-                        className={`flex items-center justify-between w-full px-3 py-2 text-left transition-colors ${
-                          isHighlighted ? "bg-slate-100" : "hover:bg-slate-50"
-                        }`}
-                      >
-                        <span className="text-sm text-slate-800">{name}</span>
-                        <span className="text-xs text-slate-400">#{personId}</span>
-                      </button>
-                    </li>
-                  );
-                })}
-            </ul>
+            />
+            <button
+              type="button"
+              onClick={() => {
+                handleNewCustomer();
+              }}
+              className="text-green-400 fa fa-plus"
+            ></button>
           </div>
+          {/* <span className="pointer-events-none absolute inset-y-0 right-3.5 flex items-center text-slate-400">
+            <i className="text-xs fa-regular fa-chevron-down" aria-hidden />
+          </span> */}
+
+          {isOpen && debouncedQuery.length > 0 && (
+            <div className="absolute z-20 w-full mb-2 overflow-hidden bg-white border bottom-full rounded-2xl border-slate-200">
+              <ul className="overflow-y-auto max-h-64">
+                {isFetching && (
+                  <li className="px-3 py-2 text-sm text-slate-500">
+                    Searching...
+                  </li>
+                )}
+
+                {!isFetching && uniqueCustomers.length === 0 && (
+                  <li className="px-3 py-2 text-sm text-slate-500">
+                    No customers found
+                  </li>
+                )}
+
+                {!isFetching &&
+                  uniqueCustomers.map((customer, itemIndex) => {
+                    const customerKey = getCustomerKey(customer);
+                    const name = getCustomerLabel(customer);
+                    const personId = customer?.fieldData?.__kp_PersonID;
+                    const isHighlighted = highlightedIndex === itemIndex;
+
+                    return (
+                      <li key={customerKey}>
+                        <button
+                          type="button"
+                          onClick={() => handleSelectCustomer(customer)}
+                          onMouseEnter={() => setHighlightedIndex(itemIndex)}
+                          className={`flex items-center justify-between w-full px-3 py-2 text-left transition-colors ${
+                            isHighlighted ? "bg-slate-100" : "hover:bg-slate-50"
+                          }`}
+                        >
+                          <span className="text-sm text-slate-800">{name}</span>
+                          <span className="text-xs text-slate-400">
+                            #{personId}
+                          </span>
+                        </button>
+                      </li>
+                    );
+                  })}
+              </ul>
+            </div>
+          )}
+          {/* <button>+</button> */}
+        </div>
+
+        {hasValue && (
+          <p className="px-1 text-xs text-slate-500">
+            Person ID: {selectedCustomer?.fieldData?.__kp_PersonID}
+          </p>
         )}
       </div>
-
-      {hasValue && (
-        <p className="px-1 text-xs text-slate-500">
-          Person ID: {selectedCustomer?.fieldData?.__kp_PersonID}
-        </p>
-      )}
-    </div>
+    </>
   );
 };
 

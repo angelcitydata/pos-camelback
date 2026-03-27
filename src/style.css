@@ -32,6 +32,59 @@ code {
 .blob-enter {
   animation: fadeIn 0.3s ease-out;
 }
+
+@keyframes confettiBurst {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0) rotate(0deg) scale(0.75);
+  }
+  14% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(
+        var(--confetti-drift, 0px),
+        calc(-1 * var(--confetti-rise, 65vh)),
+        0
+      )
+      rotate(var(--confetti-rotate, 720deg)) scale(1.08);
+  }
+}
+
+.app-confetti-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 60;
+}
+
+.app-confetti-piece {
+  --confetti-delay: 0ms;
+  --confetti-duration: 1700ms;
+  --confetti-drift: 0px;
+  --confetti-rise: 65vh;
+  --confetti-rotate: 720deg;
+  position: absolute;
+  bottom: -12px;
+  border-radius: 2px;
+  opacity: 0;
+  animation-name: confettiBurst;
+  animation-duration: var(--confetti-duration);
+  animation-delay: var(--confetti-delay);
+  animation-timing-function: cubic-bezier(0.16, 0.88, 0.27, 1.02);
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-confetti-piece {
+    animation: none;
+    display: none;
+  }
+}
+
 .App {
   text-align: center;
 }

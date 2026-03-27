@@ -10,6 +10,7 @@ const Cart = ({
   step,
   onSelectCustomer,
   selectedCustomer,
+  handleNewCustomer,
 }) => {
   const isEmpty = cart.length === 0;
   console.log(step);
@@ -120,6 +121,7 @@ const Cart = ({
             <CustomerSelect
               onSelectCustomer={onSelectCustomer}
               selectedCustomer={selectedCustomer}
+              handleNewCustomer={handleNewCustomer}
             />
           </div>
         )}
