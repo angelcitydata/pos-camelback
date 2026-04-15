@@ -11,6 +11,7 @@ const Cart = ({
   onSelectCustomer,
   selectedCustomer,
   handleNewCustomer,
+  onCheckout,
 }) => {
   const isEmpty = cart.length === 0;
   console.log(step);
@@ -151,7 +152,7 @@ const Cart = ({
                 disabled={disableOrderActions}
                 className="flex-1 p-4 mt-8 text-base font-semibold tracking-wide text-white uppercase transition bg-green-600 border-2 border-green-600 rounded-lg hover:bg-green-700 hover:cursor-pointer active:bg-green-800 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-green-600"
                 onClick={() => {
-                  saveCart("checkout");
+                  if (onCheckout) onCheckout();
                 }}
               >
                 Check Out

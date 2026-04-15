@@ -122,6 +122,7 @@ function App({
   const [filter, setFilter] = useState("Top Ten");
   const [filteredProducts, setFilteredProducts] = useState(updatedProducts);
   const [productGridResetToken, setProductGridResetToken] = useState(0);
+  const [showCheckout, setShowCheckout] = useState(false);
   const [showConfettiBurst, setShowConfettiBurst] = useState(false);
   const [confettiBurstToken, setConfettiBurstToken] = useState(0);
 
@@ -192,6 +193,7 @@ function App({
       setFilterMode("Collections");
       setFilter("Top Ten");
       setProductGridResetToken((prevToken) => prevToken + 1);
+      setShowCheckout(false);
     }
   }, [orderStatus]);
 
@@ -243,7 +245,6 @@ function App({
   const handleNewCustomer = () => {
     FileMaker.PerformScript("New Customer at POS");
   };
-  console.log(customer);
   window.getNewCustomerFromFileMaker = (json) => {
     const obj = JSON.parse(json);
     const customer = obj.customer;
@@ -446,14 +447,28 @@ function App({
             />
           </div>
           <div className="min-h-0 col-span-12 md:col-span-6 lg:col-span-7">
-            <ProductGrid
-              products={filteredProducts}
-              allProducts={updatedProducts}
-              cart={cart}
-              addToCart={addToCart}
-              isLocked={orderStatus === "complete"}
-              resetToken={productGridResetToken}
-            />
+            {showCheckout ? (
+              <CheckoutPage
+                orderInfo={{
+                  cart,
+                  total,
+                  orderId,
+                  recordId,
+                  orderNumber,
+                  customer,
+                }}
+                onBack={() => setShowCheckout(false)}
+              />
+            ) : (
+              <ProductGrid
+                products={filteredProducts}
+                allProducts={updatedProducts}
+                cart={cart}
+                addToCart={addToCart}
+                isLocked={orderStatus === "complete"}
+                resetToken={productGridResetToken}
+              />
+            )}
           </div>
           <div className="min-h-0 col-span-12 md:col-span-4 lg:col-span-3">
             {orderStatus === "complete" ? (
@@ -473,6 +488,7 @@ function App({
                 onSelectCustomer={(customer) => {
                   setCustomer(customer);
                 }}
+                onCheckout={() => setShowCheckout(true)}
               />
             )}
           </div>

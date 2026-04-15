@@ -3,30 +3,32 @@ import React, { useState } from 'react';
 const PaymentDetail = ({ orderInfo, onDone, backToOrder }) => {
   // Helper function to convert date from YYYY-MM-DD to MM/DD/YYYY
   const formatDateToUS = (dateString) => {
-    if (!dateString) return '';
+    if (!dateString) return "";
     const date = new Date(dateString);
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
     const year = date.getFullYear();
     return `${month}/${day}/${year}`;
   };
 
   // Helper function to convert date from MM/DD/YYYY to YYYY-MM-DD for input
   const formatDateToISO = (dateString) => {
-    if (!dateString) return '';
-    if (dateString.includes('-')) return dateString; // Already in ISO format
-    const [month, day, year] = dateString.split('/');
-    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    if (!dateString) return "";
+    if (dateString.includes("-")) return dateString; // Already in ISO format
+    const [month, day, year] = dateString.split("/");
+    return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
   };
 
+  const todayISO = new Date().toLocaleDateString("en-CA"); // YYYY-MM-DD in local time
+
   const [formData, setFormData] = useState({
-    paymentDate: formatDateToISO(orderInfo?.paymentDate) || "",
+    paymentDate: formatDateToISO(orderInfo?.paymentDate) || todayISO,
     customer: orderInfo?.customer || "",
     idPayment: orderInfo?.idPayment || "",
     paymentMethod: orderInfo?.paymentMethod || "",
     paymentNumber: orderInfo?.paymentNumber || "",
     amount: orderInfo?.amount || "",
-    date: formatDateToISO(orderInfo?.date) || "",
+    date: formatDateToISO(orderInfo?.date) || todayISO,
     notes: orderInfo?.notes || "",
   });
 
@@ -44,9 +46,9 @@ const PaymentDetail = ({ orderInfo, onDone, backToOrder }) => {
   ];
 
   const handleChange = (field, value) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
@@ -55,7 +57,7 @@ const PaymentDetail = ({ orderInfo, onDone, backToOrder }) => {
     const formattedData = {
       ...formData,
       paymentDate: formatDateToUS(formData.paymentDate),
-      date: formatDateToUS(formData.date)
+      date: formatDateToUS(formData.date),
     };
     onDone(formattedData);
   };
@@ -164,6 +166,6 @@ const PaymentDetail = ({ orderInfo, onDone, backToOrder }) => {
       </div>
     </div>
   );
-};
+};;
 
 export default PaymentDetail;

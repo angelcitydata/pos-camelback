@@ -6,7 +6,57 @@ import PaymentComplete from "./Checkout/PaymentComplete";
 
 import { checkoutActions } from "../utlis/filemakerBridge";
 
-const CheckoutPage = ({ orderInfo = {}, storedPaymentMethods = [] }) => {
+const CheckoutPage = ({
+  orderInfo = {},
+  storedPaymentMethods = [],
+  onBack,
+}) => {
+  console.log(orderInfo);
+
+  // Parse the raw storedPaymentMethods array from FileMaker.
+  // Each element has a JSON string in 'per_PAM__paymentmethods::Object'.
+  const parsedPaymentMethods =
+    orderInfo.customer?.portalData?.storedPaymentMethods
+      .map((entry) => {
+        try {
+          return JSON.parse(entry["per_PAM__paymentmethods::Object"]);
+        } catch {
+          return null;
+        }
+      })
+      .filter(Boolean);
+  console.log(parsedPaymentMethods);
+  // Parse the raw orderInfo from App into the shape PaymentDetail expects
+  const {
+    cart = [],
+    total = 0,
+    orderId,
+    recordId,
+    orderNumber,
+    customer,
+  } = orderInfo;
+  const customerName = customer?.fieldData?.NameFull_ct || "";
+  const stripeCustomerId = customer?.fieldData?.stripe_customer_id || "";
+  const preferredPaymentMethodId =
+    customer?.fieldData?.["per_PAM__paymentmethods_Preferred::StripeId"] || "";
+
+  const parsedOrderInfo = {
+    orderId,
+    recordId,
+    orderNumber,
+    amount: total,
+    customer: customerName,
+    stripeCustomerId,
+    preferredPaymentMethodId,
+    cart,
+    // Fields that will be filled in by PaymentDetail form
+    paymentDate: "",
+    paymentMethod: "",
+    paymentNumber: "",
+    date: "",
+    notes: "",
+  };
+
   const [view, setView] = useState("paymentDetail"); // 'paymentDetail', 'checkout', 'processing', 'complete'
   const [checkoutData, setCheckoutData] = useState(null); // Store payment form data and checkout selections
 
@@ -44,7 +94,7 @@ const CheckoutPage = ({ orderInfo = {}, storedPaymentMethods = [] }) => {
 
     // Keep form data and checkout method selections separate
     const completeCheckoutData = {
-      orderInfo,
+      orderInfo: parsedOrderInfo,
       paymentDetail: checkoutData,
       checkoutMethod: stripeCheckoutData,
       paymentMethod: checkoutData.paymentMethod,
@@ -61,7 +111,7 @@ const CheckoutPage = ({ orderInfo = {}, storedPaymentMethods = [] }) => {
     checkoutActions.done({
       paymentDetail: formData,
       checkoutMethod: null,
-      orderInfo,
+      orderInfo: parsedOrderInfo,
     });
   };
 
@@ -93,7 +143,7 @@ const CheckoutPage = ({ orderInfo = {}, storedPaymentMethods = [] }) => {
     checkoutActions.done({
       paymentDetail: checkoutData,
       checkoutMethod: null,
-      orderInfo,
+      orderInfo: parsedOrderInfo,
     });
   };
 
@@ -101,14 +151,14 @@ const CheckoutPage = ({ orderInfo = {}, storedPaymentMethods = [] }) => {
     <div className="min-h-screen py-8 bg-gray-50">
       {view === "paymentDetail" && (
         <PaymentDetail
-          orderInfo={orderInfo}
+          orderInfo={parsedOrderInfo}
           onDone={handleProceedToCheckout}
           backToOrder={backToOrder}
         />
       )}
       {view === "checkout" && (
         <CheckoutMethod
-          storedPaymentMethods={storedPaymentMethods}
+          storedPaymentMethods={parsedPaymentMethods}
           onProcess={handleProcess}
           onGoBack={handleGoBack}
         />
