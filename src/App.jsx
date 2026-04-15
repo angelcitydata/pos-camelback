@@ -121,6 +121,7 @@ function App({
   const [filterMode, setFilterMode] = useState("Collections");
   const [filter, setFilter] = useState("Top Ten");
   const [filteredProducts, setFilteredProducts] = useState(updatedProducts);
+  const [productGridResetToken, setProductGridResetToken] = useState(0);
   const [showConfettiBurst, setShowConfettiBurst] = useState(false);
   const [confettiBurstToken, setConfettiBurstToken] = useState(0);
 
@@ -188,6 +189,9 @@ function App({
   useEffect(() => {
     if (orderStatus === "complete") {
       setCart([]);
+      setFilterMode("Collections");
+      setFilter("Top Ten");
+      setProductGridResetToken((prevToken) => prevToken + 1);
     }
   }, [orderStatus]);
 
@@ -297,6 +301,10 @@ function App({
   };
 
   const addToCart = (product) => {
+    if (orderStatus === "complete") {
+      return;
+    }
+
     setCart((prevCart) => {
       const productIndex = prevCart.findIndex(
         (item) =>
@@ -443,6 +451,8 @@ function App({
               allProducts={updatedProducts}
               cart={cart}
               addToCart={addToCart}
+              isLocked={orderStatus === "complete"}
+              resetToken={productGridResetToken}
             />
           </div>
           <div className="min-h-0 col-span-12 md:col-span-4 lg:col-span-3">

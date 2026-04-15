@@ -126,32 +126,44 @@ const Cart = ({
           </div>
         )}
         {step === "newOrder" && (
-          <div className="flex gap-4">
+          <div>
             <button
               type="button"
               disabled={disableOrderActions}
-              className="flex-1 p-4 mt-8 text-base font-semibold tracking-wide uppercase transition border-2 rounded-lg text-slate-400 border-slate-400 hover:bg-slate-700 hover:cursor-pointer hover:text-white hover:border-slate-700 active:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-green-600"
-              onClick={() => saveCart("save")}
-            >
-              Save Cart
-            </button>
-            <button
-              type="button"
-              disabled={disableOrderActions}
-              className="flex-1 p-4 mt-8 text-base font-semibold tracking-wide text-white uppercase transition bg-green-600 border-2 border-green-600 rounded-lg hover:bg-green-700 hover:cursor-pointer active:bg-green-800 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-green-600"
+              className="w-full p-4 mt-6 text-base font-extrabold tracking-wide text-white uppercase transition bg-pink-500 border-2 border-pink-500 rounded-lg hover:bg-pink-600 hover:border-pink-600 hover:cursor-pointer active:bg-pink-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-pink-500"
               onClick={() => {
-                saveCart("checkout");
+                saveCart("quickCheckout");
               }}
             >
-              Check Out
+              Quick Checkout
             </button>
-            <button
-              type="button"
-              className="mt-8 px-4 py-2.5 text-sm font-semibold tracking-wide uppercase transition border-2 rounded-lg text-slate-600 bg-slate-100 border-slate-300 hover:bg-slate-200 hover:cursor-pointer active:bg-slate-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-slate-100"
-              onClick={() => saveCart("cancelOrder")}
-            >
-              Cancel
-            </button>
+            <div className="flex gap-4">
+              <button
+                type="button"
+                disabled={disableOrderActions}
+                className="flex-1 p-4 mt-8 text-base font-semibold tracking-wide uppercase transition border-2 rounded-lg text-slate-400 border-slate-400 hover:bg-slate-700 hover:cursor-pointer hover:text-white hover:border-slate-700 active:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-green-600"
+                onClick={() => saveCart("save")}
+              >
+                Save Cart
+              </button>
+              <button
+                type="button"
+                disabled={disableOrderActions}
+                className="flex-1 p-4 mt-8 text-base font-semibold tracking-wide text-white uppercase transition bg-green-600 border-2 border-green-600 rounded-lg hover:bg-green-700 hover:cursor-pointer active:bg-green-800 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-green-600"
+                onClick={() => {
+                  saveCart("checkout");
+                }}
+              >
+                Check Out
+              </button>
+              <button
+                type="button"
+                className="mt-8 px-4 py-2.5 text-sm font-semibold tracking-wide uppercase transition border-2 rounded-lg text-slate-600 bg-slate-100 border-slate-300 hover:bg-slate-200 hover:cursor-pointer active:bg-slate-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-slate-100"
+                onClick={() => saveCart("cancelOrder")}
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         )}
         {step === "add" && (

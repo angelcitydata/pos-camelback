@@ -15,7 +15,7 @@ console.log('Stored Payment Methods:', storedPaymentMethods);
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-sm min-h-[800px] flex flex-col">
+    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-sm min-h-200 flex flex-col">
       <div className="flex-1">
         <h1 className="text-3xl font-bold text-center mb-4">Checkout Method</h1>
 
@@ -127,35 +127,36 @@ console.log('Stored Payment Methods:', storedPaymentMethods);
                     </tr>
                   </thead>
                   <tbody>
-                    { storedPaymentMethods && storedPaymentMethods.map((method, index) => (
-                      <tr
-                        key={index}
-                        className="border-b border-gray-200 hover:bg-gray-50 cursor-pointer"
-                        onClick={() => setSelectedPaymentMethod(index)}
-                      >
-                        <td className="px-4 py-3">{method.type || ""}</td>
-                        <td className="px-4 py-3">
-                          {method.card?.brand || ""}
-                        </td>
-                        <td className="px-4 py-3">
-                          {method.card?.last4 || ""}
-                        </td>
-                        <td className="px-4 py-3">
-                          {method.card?.exp_month || ""}
-                        </td>
-                        <td className="px-4 py-3">
-                          {method.card?.exp_year || ""}
-                        </td>
-                        <td className="px-4 py-3 text-center">
-                          <input
-                            type="checkbox"
-                            checked={selectedPaymentMethod === index}
-                            onChange={() => setSelectedPaymentMethod(index)}
-                            className="w-5 h-5 accent-gray-400"
-                          />
-                        </td>
-                      </tr>
-                    ))}
+                    {storedPaymentMethods &&
+                      storedPaymentMethods.map((method, index) => (
+                        <tr
+                          key={index}
+                          className="border-b border-gray-200 hover:bg-gray-50 cursor-pointer"
+                          onClick={() => setSelectedPaymentMethod(index)}
+                        >
+                          <td className="px-4 py-3">{method.type || ""}</td>
+                          <td className="px-4 py-3">
+                            {method.card?.brand || ""}
+                          </td>
+                          <td className="px-4 py-3">
+                            {method.card?.last4 || ""}
+                          </td>
+                          <td className="px-4 py-3">
+                            {method.card?.exp_month || ""}
+                          </td>
+                          <td className="px-4 py-3">
+                            {method.card?.exp_year || ""}
+                          </td>
+                          <td className="px-4 py-3 text-center">
+                            <input
+                              type="checkbox"
+                              checked={selectedPaymentMethod === index}
+                              onChange={() => setSelectedPaymentMethod(index)}
+                              className="w-5 h-5 accent-gray-400"
+                            />
+                          </td>
+                        </tr>
+                      ))}
                   </tbody>
                 </table>
               </div>

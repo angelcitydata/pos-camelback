@@ -61,7 +61,7 @@ const PaymentDetail = ({ orderInfo, onDone, backToOrder }) => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-sm min-h-[800px]">
+    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-sm min-h-200">
       <h1 className="text-3xl font-bold text-center mb-4">Payment Detail</h1>
 
       <div className="space-y-4">
@@ -88,7 +88,7 @@ const PaymentDetail = ({ orderInfo, onDone, backToOrder }) => {
         <div className="grid grid-cols-[200px_1fr] gap-4 items-center">
           <label className="text-gray-600 text-lg">Payment Method</label>
           <select
-            className="border border-gray-300 rounded px-4 py-3 bg-white cursor-pointer text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 20 20%27%3e%3cpath stroke=%27%236b7280%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%271.5%27 d=%27m6 8 4 4 4-4%27/%3e%3c/svg%3e')] bg-[length:1.5em_1.5em] bg-[right_0.5rem_center] bg-no-repeat pr-10"
+            className="border border-gray-300 rounded px-4 py-3 bg-white cursor-pointer text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 20 20%27%3e%3cpath stroke=%27%236b7280%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%271.5%27 d=%27m6 8 4 4 4-4%27/%3e%3c/svg%3e')] bg-size-[1.5em_1.5em] bg-position-[right_0.5rem_center] bg-no-repeat pr-10"
             value={formData.paymentMethod}
             onChange={(e) => handleChange("paymentMethod", e.target.value)}
           >

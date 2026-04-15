@@ -3,7 +3,14 @@ import React, { useEffect, useState } from "react";
 import ProductCard from "./ProductCard";
 import VariantCard from "./VariantCard";
 
-const ProductGrid = ({ products, allProducts = [], cart, addToCart }) => {
+const ProductGrid = ({
+  products,
+  allProducts = [],
+  cart,
+  addToCart,
+  isLocked = false,
+  resetToken = 0,
+}) => {
   const [animatedProducts, setAnimatedProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -36,6 +43,15 @@ const ProductGrid = ({ products, allProducts = [], cart, addToCart }) => {
     setSelectedProduct(null);
   }, [products]);
 
+  useEffect(() => {
+    if (!isLocked) {
+      return;
+    }
+
+    setSelectedProduct(null);
+    setSearchQuery("");
+  }, [isLocked, resetToken]);
+
   const matchesSearch = (product, query) => {
     if (!query.trim()) return true;
     const q = query.trim().toLowerCase();
@@ -54,6 +70,10 @@ const ProductGrid = ({ products, allProducts = [], cart, addToCart }) => {
   };
 
   const handleProductClick = (product) => {
+    if (isLocked) {
+      return;
+    }
+
     if (product.variants?.length === 1) {
       const variant = product.variants[0];
       addToCart({
@@ -88,6 +108,7 @@ const ProductGrid = ({ products, allProducts = [], cart, addToCart }) => {
             key={product.id}
             product={product}
             quantityInCart={quantityInCart}
+            disabled={isLocked}
             onClick={() => handleProductClick(product)}
           />
         );
@@ -117,6 +138,7 @@ const ProductGrid = ({ products, allProducts = [], cart, addToCart }) => {
                 variant={variant}
                 productName={selectedProduct.name}
                 quantityInCart={quantityInCart}
+                disabled={isLocked}
                 onClick={() =>
                   addToCart({
                     productId: selectedProduct.id,
@@ -144,8 +166,9 @@ const ProductGrid = ({ products, allProducts = [], cart, addToCart }) => {
             <>
               <button
                 type="button"
+                disabled={isLocked}
                 onClick={() => setSelectedProduct(null)}
-                className="flex flex-shrink-0 items-center justify-center w-8 h-8 transition rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                className="flex shrink-0 items-center justify-center w-8 h-8 transition rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                 aria-label="Back to products"
               >
                 <i
@@ -164,7 +187,7 @@ const ProductGrid = ({ products, allProducts = [], cart, addToCart }) => {
           )}
         </div>
         {!selectedProduct && (
-          <div className="relative flex-shrink-0 w-48 sm:w-56">
+          <div className="relative shrink-0 w-48 sm:w-56">
             <label htmlFor="product-search" className="sr-only">
               Search products
             </label>
@@ -176,6 +199,7 @@ const ProductGrid = ({ products, allProducts = [], cart, addToCart }) => {
               id="product-search"
               type="search"
               value={searchQuery}
+              disabled={isLocked}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search products…"
               className="w-full rounded-lg border border-slate-200 bg-slate-50/80 py-1.5 pl-9 pr-9 text-sm text-slate-900 placeholder:text-slate-400 focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500 [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-cancel-button]:[-webkit-appearance:none]"
@@ -184,6 +208,7 @@ const ProductGrid = ({ products, allProducts = [], cart, addToCart }) => {
             {searchQuery.length > 0 && (
               <button
                 type="button"
+                disabled={isLocked}
                 onClick={() => setSearchQuery("")}
                 className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-5 h-5 rounded-full text-slate-400 hover:bg-red-200 hover:text-red-600 transition hover:cursor-pointer"
                 aria-label="Clear search"

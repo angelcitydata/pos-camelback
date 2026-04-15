@@ -1,33 +1,35 @@
 import React, { useState, useEffect } from "react";
-import PaymentDetail from "../components/PaymentDetail";
-import CheckoutMethod from "../components/CheckoutMethod";
-import ProcessingScreen from "../components/ProcessingScreen";
-import PaymentComplete from "../components/PaymentComplete";
-import { checkoutActions } from "../utils/filemakerBridge";
+import CheckoutMethod from "./Checkout/CheckoutMethod";
+import PaymentDetail from "./Checkout/PaymentDetail";
+import ProcessingScreen from "./Checkout/ProcessingScreen";
+import PaymentComplete from "./Checkout/PaymentComplete";
 
-const CheckoutPage = ({ orderInfo, storedPaymentMethods }) => {
-  const [view, setView] = useState('paymentDetail'); // 'paymentDetail', 'checkout', 'processing', 'complete'
+import { checkoutActions } from "../utlis/filemakerBridge";
+
+const CheckoutPage = ({ orderInfo = {}, storedPaymentMethods = [] }) => {
+  const [view, setView] = useState("paymentDetail"); // 'paymentDetail', 'checkout', 'processing', 'complete'
   const [checkoutData, setCheckoutData] = useState(null); // Store payment form data and checkout selections
 
   // Listen for messages from FileMaker
   useEffect(() => {
     const handleFileMakerMessage = (event) => {
-      if (event.data && event.data.message === 'success') {
-        setView('complete');
+      if (event.data && event.data.message === "success") {
+        setView("complete");
       }
     };
 
     // Set up global function for FileMaker to call
     window.handlePaymentResponse = (response) => {
-      console.log('Received response from FileMaker:', response);
+      console.log("Received response from FileMaker:", response);
       try {
-        const data = typeof response === 'string' ? JSON.parse(response) : response;
-        console.log('Parsed FileMaker response data:', data);
-        if (data.message === 'success') {
-          setView('complete');
+        const data =
+          typeof response === "string" ? JSON.parse(response) : response;
+        console.log("Parsed FileMaker response data:", data);
+        if (data.message === "success") {
+          setView("complete");
         }
       } catch (error) {
-        console.error('Error parsing FileMaker response:', error);
+        console.error("Error parsing FileMaker response:", error);
       }
     };
 
@@ -38,16 +40,19 @@ const CheckoutPage = ({ orderInfo, storedPaymentMethods }) => {
 
   const handleProcess = (stripeCheckoutData) => {
     // Show processing screen
-    setView('processing');
-    
+    setView("processing");
+
     // Keep form data and checkout method selections separate
     const completeCheckoutData = {
       orderInfo,
       paymentDetail: checkoutData,
       checkoutMethod: stripeCheckoutData,
-      paymentMethod: checkoutData.paymentMethod
+      paymentMethod: checkoutData.paymentMethod,
     };
-    console.log('Complete Checkout Data to send to FileMaker:', completeCheckoutData);
+    console.log(
+      "Complete Checkout Data to send to FileMaker:",
+      completeCheckoutData
+    );
     checkoutActions.process(completeCheckoutData);
   };
 
@@ -56,26 +61,28 @@ const CheckoutPage = ({ orderInfo, storedPaymentMethods }) => {
     checkoutActions.done({
       paymentDetail: formData,
       checkoutMethod: null,
-      orderInfo
+      orderInfo,
     });
   };
 
   const handleGoBack = () => {
     // Go back from checkout to payment detail
-    setView('paymentDetail');
+    setView("paymentDetail");
   };
 
   const backToOrder = () => {
     checkoutActions.toOrder();
-  }
+  };
   const handleProceedToCheckout = (formData) => {
     // Store payment data as checkout data
     setCheckoutData(formData);
-    
+
     // Only proceed to checkout if payment method is Credit Card
-    if (formData?.paymentMethod?.toLowerCase().includes('credit') || 
-        formData?.paymentMethod?.toLowerCase().includes('card')) {
-      setView('checkout');
+    if (
+      formData?.paymentMethod?.toLowerCase().includes("credit") ||
+      formData?.paymentMethod?.toLowerCase().includes("card")
+    ) {
+      setView("checkout");
     } else {
       // For non-credit card payments, send data and complete
       handleDone(formData);
@@ -86,33 +93,28 @@ const CheckoutPage = ({ orderInfo, storedPaymentMethods }) => {
     checkoutActions.done({
       paymentDetail: checkoutData,
       checkoutMethod: null,
-      orderInfo
-
+      orderInfo,
     });
   };
 
   return (
     <div className="min-h-screen py-8 bg-gray-50">
-      {view === 'paymentDetail' && (
-        <PaymentDetail 
+      {view === "paymentDetail" && (
+        <PaymentDetail
           orderInfo={orderInfo}
           onDone={handleProceedToCheckout}
           backToOrder={backToOrder}
         />
       )}
-      {view === 'checkout' && (
-        <CheckoutMethod 
+      {view === "checkout" && (
+        <CheckoutMethod
           storedPaymentMethods={storedPaymentMethods}
           onProcess={handleProcess}
           onGoBack={handleGoBack}
         />
       )}
-      {view === 'processing' && (
-        <ProcessingScreen />
-      )}
-      {view === 'complete' && (
-        <PaymentComplete onDone={handleComplete} />
-      )}
+      {view === "processing" && <ProcessingScreen />}
+      {view === "complete" && <PaymentComplete onDone={handleComplete} />}
     </div>
   );
 };
