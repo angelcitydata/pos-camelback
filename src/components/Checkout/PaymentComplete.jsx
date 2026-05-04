@@ -2,13 +2,13 @@ import React from 'react';
 
 const PaymentComplete = ({ onDone }) => {
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-sm min-h-175 flex flex-col items-center justify-center">
+    <div className="flex flex-col h-full p-6 bg-white rounded-2xl items-center justify-center">
       <div className="text-center">
         {/* Success Icon */}
         <div className="mb-6">
-          <div className="inline-flex items-center justify-center w-24 h-24 bg-green-100 rounded-full">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full">
             <svg
-              className="w-16 h-16 text-green-600"
+              className="w-12 h-12 text-green-600"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -23,17 +23,17 @@ const PaymentComplete = ({ onDone }) => {
           </div>
         </div>
 
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">
+        <h2 className="text-xl font-bold text-slate-900 mb-2">
           Payment Complete
-        </h1>
-        <p className="text-gray-600 mb-8">
+        </h2>
+        <p className="text-sm text-slate-500 mb-8">
           Your payment has been processed successfully.
         </p>
 
         {onDone && (
           <button
             onClick={onDone}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-12 py-3 rounded-lg text-lg"
+            className="w-full p-4 text-base font-extrabold tracking-wide text-white uppercase transition bg-green-600 border-2 border-green-600 rounded-lg hover:bg-green-700 hover:border-green-700 hover:cursor-pointer active:bg-green-800"
           >
             Done
           </button>

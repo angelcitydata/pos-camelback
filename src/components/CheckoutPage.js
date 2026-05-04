@@ -36,6 +36,7 @@ const CheckoutPage = ({
     customer,
   } = orderInfo;
   const customerName = customer?.fieldData?.NameFull_ct || "";
+  const customerPk = customer?.fieldData?.__kp_PersonID || "";
   const stripeCustomerId = customer?.fieldData?.stripe_customer_id || "";
   const preferredPaymentMethodId =
     customer?.fieldData?.["per_PAM__paymentmethods_Preferred::StripeId"] || "";
@@ -46,6 +47,7 @@ const CheckoutPage = ({
     orderNumber,
     amount: total,
     customer: customerName,
+    customerPk,
     stripeCustomerId,
     preferredPaymentMethodId,
     cart,
@@ -121,7 +123,7 @@ const CheckoutPage = ({
   };
 
   const backToOrder = () => {
-    checkoutActions.toOrder();
+    onBack();
   };
   const handleProceedToCheckout = (formData) => {
     // Store payment data as checkout data
@@ -148,7 +150,7 @@ const CheckoutPage = ({
   };
 
   return (
-    <div className="min-h-screen py-8 bg-gray-50">
+    <div className="flex flex-col h-full">
       {view === "paymentDetail" && (
         <PaymentDetail
           orderInfo={parsedOrderInfo}

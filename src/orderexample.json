@@ -1,0 +1,75 @@
+{
+  "action": "process",
+  "data": {
+    "checkoutMethod": {
+      "cardPresent": false,
+      "keepLocal": true,
+      "selectedPaymentMethod": "pm_1TKfZQ2Oo0a8CBua5GYg0tWT"
+    },
+    "orderInfo": {
+      "amount": 209,
+      "cart": [
+        {
+          "action": "create",
+          "fieldData": {
+            "ItemName": "Appointed Workbook",
+            "Qty": 1,
+            "Unit": "",
+            "_kf_OrderID": 7955,
+            "_kf_ProductID": 10597,
+            "_kf_VariantID": 7369
+          },
+          "layouts": "api_orderItems"
+        },
+        {
+          "action": "create",
+          "fieldData": {
+            "ItemName": "Bright Love Mason Jar",
+            "Qty": 1,
+            "Unit": "",
+            "_kf_OrderID": 7955,
+            "_kf_ProductID": 10601,
+            "_kf_VariantID": 7374
+          },
+          "layouts": "api_orderItems"
+        },
+        {
+          "action": "create",
+          "fieldData": {
+            "ItemName": "Petite Garden Centerpiece - Double",
+            "Qty": 1,
+            "Unit": "",
+            "_kf_OrderID": 7955,
+            "_kf_ProductID": 10628,
+            "_kf_VariantID": 7421
+          },
+          "layouts": "api_orderItems"
+        }
+      ],
+      "customer": "Dinah Brown",
+      "customerPk": 4738,
+      "date": "",
+      "notes": "",
+      "orderId": 7955,
+      "orderNumber": 107313,
+      "paymentDate": "",
+      "paymentMethod": "",
+      "paymentNumber": "",
+      "preferredPaymentMethodId": "pm_1TKfZQ2Oo0a8CBua5GYg0tWT",
+      "recordId": 8400,
+      "stripeCustomerId": "cus_UJI8ud5NDgvWKs"
+    },
+    "paymentDetail": {
+      "amount": 209,
+      "customer": "Dinah Brown",
+      "date": "04/14/2026",
+      "idPayment": "",
+      "notes": "",
+      "paymentDate": "04/14/2026",
+      "paymentMethod": "Credit Card",
+      "paymentNumber": ""
+    },
+    "paymentMethod": "Credit Card"
+  },
+  "timestamp": "2026-04-15T17:34:50.747Z"
+}

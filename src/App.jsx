@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
+import { createPortal } from "react-dom";
 import ProductGrid from "./components/ProductGrid";
 import Cart from "./components/Cart";
 import Filter from "./components/Filter";
@@ -71,6 +72,9 @@ function App({
           Number(variant.recordId) ||
           variant.recordId,
         productId: Number(fieldData.__kp_Product_ID) || product.recordId,
+        image: variant["prod_rate_docjoin_DOC::ThumbnailBase64"]
+          ? `data:image/png;base64,${variant["prod_rate_docjoin_DOC::ThumbnailBase64"]}`
+          : null,
         name: variant["prod_VARIANT::Description__c"] || "Variant",
         price: Number(variant["prod_VARIANT::Price"]) || 0,
         sortOrder: Number(variant["prod_VARIANT::SortOrder"]) || 0,
@@ -300,7 +304,7 @@ function App({
     FileMaker.PerformScript("Save Cart", JSON.stringify(cartData));
     // setCart([]);
   };
-
+console.log(customer);
   const addToCart = (product) => {
     if (orderStatus === "complete") {
       return;
@@ -395,6 +399,18 @@ function App({
     (sum, product) => sum + product.price * product.quantity,
     0
   );
+  const fileMakerCart = cart.map((item) => ({
+    action: "create",
+    layouts: "api_orderItems",
+    fieldData: {
+      ItemName: item.name,
+      Qty: item.quantity,
+      Unit: item.unit || "",
+      _kf_OrderID: orderId,
+      _kf_ProductID: item.productId,
+      _kf_VariantID: item.variantId,
+    },
+  }));
 
   return (
     <div className="min-h-screen text-gray-700 bg-slate-100">
@@ -447,28 +463,14 @@ function App({
             />
           </div>
           <div className="min-h-0 col-span-12 md:col-span-6 lg:col-span-7">
-            {showCheckout ? (
-              <CheckoutPage
-                orderInfo={{
-                  cart,
-                  total,
-                  orderId,
-                  recordId,
-                  orderNumber,
-                  customer,
-                }}
-                onBack={() => setShowCheckout(false)}
-              />
-            ) : (
-              <ProductGrid
-                products={filteredProducts}
-                allProducts={updatedProducts}
-                cart={cart}
-                addToCart={addToCart}
-                isLocked={orderStatus === "complete"}
-                resetToken={productGridResetToken}
-              />
-            )}
+            <ProductGrid
+              products={filteredProducts}
+              allProducts={updatedProducts}
+              cart={cart}
+              addToCart={addToCart}
+              isLocked={orderStatus === "complete"}
+              resetToken={productGridResetToken}
+            />
           </div>
           <div className="min-h-0 col-span-12 md:col-span-4 lg:col-span-3">
             {orderStatus === "complete" ? (
@@ -494,6 +496,35 @@ function App({
           </div>
         </div>
       </div>
+
+      {/* Checkout Drawer Portal */}
+      {showCheckout &&
+        createPortal(
+          <div className="fixed inset-0 z-50 flex justify-end">
+            {/* Dim overlay */}
+            <div
+              className="checkout-overlay absolute inset-0 bg-black/50 backdrop-blur-[2px]"
+              onClick={() => setShowCheckout(false)}
+            />
+            {/* Drawer */}
+            <div className="relative z-10 flex flex-col w-1/2 h-full shadow-2xl checkout-drawer bg-slate-100">
+              <div className="flex flex-col flex-1 min-h-0 gap-0 p-4">
+                <CheckoutPage
+                  orderInfo={{
+                    cart: fileMakerCart,
+                    total,
+                    orderId,
+                    recordId,
+                    orderNumber,
+                    customer,
+                  }}
+                  onBack={() => setShowCheckout(false)}
+                />
+              </div>
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   );
 }

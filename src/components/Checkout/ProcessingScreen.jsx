@@ -2,12 +2,12 @@ import React from 'react';
 
 const ProcessingScreen = () => {
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-sm min-h-175 flex flex-col items-center justify-center">
+    <div className="flex flex-col h-full p-6 bg-white rounded-2xl items-center justify-center">
       <div className="text-center">
         {/* Credit Card Animation */}
         <div className="mb-8 relative">
           {/* Card */}
-          <div className="w-64 h-40 bg-linear-to-br from-blue-500 to-blue-700 rounded-xl shadow-xl relative overflow-hidden animate-pulse">
+          <div className="w-64 h-40 bg-linear-to-br from-slate-600 to-slate-800 rounded-xl shadow-xl relative overflow-hidden animate-pulse">
             {/* Card shine effect */}
             <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent animate-[shimmer_2s_ease-in-out_infinite]"></div>
 
@@ -28,16 +28,16 @@ const ProcessingScreen = () => {
 
           {/* Processing circles */}
           <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
-            <div className="w-3 h-3 bg-blue-500 rounded-full animate-[bounce_1s_ease-in-out_infinite]"></div>
-            <div className="w-3 h-3 bg-blue-500 rounded-full animate-[bounce_1s_ease-in-out_0.2s_infinite]"></div>
-            <div className="w-3 h-3 bg-blue-500 rounded-full animate-[bounce_1s_ease-in-out_0.4s_infinite]"></div>
+            <div className="w-3 h-3 bg-pink-500 rounded-full animate-[bounce_1s_ease-in-out_infinite]"></div>
+            <div className="w-3 h-3 bg-pink-500 rounded-full animate-[bounce_1s_ease-in-out_0.2s_infinite]"></div>
+            <div className="w-3 h-3 bg-pink-500 rounded-full animate-[bounce_1s_ease-in-out_0.4s_infinite]"></div>
           </div>
         </div>
 
-        <h1 className="text-3xl font-bold text-gray-800 mb-2 mt-8">
+        <h2 className="text-xl font-bold text-slate-900 mb-2 mt-8">
           Processing Payment
-        </h1>
-        <p className="text-gray-600">
+        </h2>
+        <p className="text-sm text-slate-500">
           Please wait while we securely process your payment...
         </p>
       </div>
